@@ -2,14 +2,22 @@ import requests as rq
 import json
 import pandas as pd
 
-API_KEY = "ckey_4e20bd1de6b3424c81eefbd7157"
-chain_id ="1"
+
+def wallet_balance(address):
+    api_key = 'ckey_4e20bd1de6b3424c81eefbd7157'
+    chain_id = '1' #ETH
+    formatage = "balances_v2"  # ->Soldes / 'transactions_v2' -> Opérations / 'transfers_v2' -> Transfers
+    
+    api_url = 'https://api.covalenthq.com'
+    endpoint = f'/v1/{chain_id}/address/{adress}/{formatage}/?key={api_key}'
+    url = api_url + endpoint
+    
+    r = rq.get(url).json()['data']['items']
+    
+    df = pd.DataFrame(r)
+    
+    print(df)
+    return
+
 adress = "0xb1adceddb2941033a090dd166a462fe1c2029484"
-
-url = "https://api.covalenthq.com/v1/{}/address/{}/stacks/compound/acts/?key={}".format(chain_id, adress, API_KEY)
-
-result = rq.get(url).json()['data']['items']
-df = pd.DataFrame(result)
-df = df.set_index('act_at')
-
-print(df)
+wallet_balance(adress)
