@@ -1,6 +1,7 @@
-from src.essais.test import wallet_balance
+from src.dash.app import launch_app
 
 def main():
+    launch_app()
     return
 
 if __name__ == "__main__":

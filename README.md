@@ -8,7 +8,7 @@ Pour permettre à d'autres personnes de s'approprier votre code, plusieurs chose
 
 Installez, créez et activez votre virtualenv sur votre machine (Mac ou GitBash(compatible windows) / a voir pour Powershell Windows):
 
-```python
+```bash
 # Installation : 
 pip install virtualenv
 
@@ -18,8 +18,18 @@ virtualenv <ENV-NAME>
 # Activation :
 source venv/bin/activate
 
-# Pour vérifier quelle python est utilisé :
+# Pour vérifier quel python est utilisé :
 which python
+```
+
+Pour que python puisse trouver l'ensemble de vos packages et modules il est nécessaire d'exporter le chemin du projet dans le PYTHONPATH :
+
+```bash
+# Ce positionner à la racine du projet :
+cd <RACINE-DU-PROJET>
+
+# Export du répertoire courant dans PYTHONPATH :
+export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 ```
 
 <br/>
@@ -37,9 +47,9 @@ Optimisation DockerFile : article de blog Alex (Faire attention à l'image de ba
 ## CICD (continuous Integration / Continuous Deployment)
 
 Utilisation de GitHub Actions : 
-Automatisation des test, de la construction de l'image, de son enregistrement sur un image registry, puis de son déploiment sur un hébergeur (comme AWS).
+Automatisation des tests, de la construction de l'image, de son enregistrement sur un image registry, puis de son déploiement sur un hébergeur (comme AWS).
 
-Mise en place d'une stratégie de mise à jour de l'application. Les différents type : https://www.techtarget.com/searchitoperations/answer/When-to-use-canary-vs-blue-green-vs-rolling-deployment#:~:text=The%20canary%20deployment%20pattern%20is,version%2C%20rather%20than%20certain%20servers.
+Mise en place d'une stratégie de mise à jour de l'application. Les différents types : https://www.techtarget.com/searchitoperations/answer/When-to-use-canary-vs-blue-green-vs-rolling-deployment#:~:text=The%20canary%20deployment%20pattern%20is,version%2C%20rather%20than%20certain%20servers.
 
 <br/>
 
@@ -47,35 +57,30 @@ Mise en place d'une stratégie de mise à jour de l'application. Les différents
 
 ```
 project/
-|-- bin/
+|-- src/
+|   |-- __init__.py
 |   |-- feature1
 |       |-- __init__.py
-|       |-- module1
-|       |-- module2
+|       |-- module1.py
+|       |-- module2.py
 |   |-- feature2
 |       |-- __init__.py
-|       |-- module1
+|       |-- module1.py
 |
-|-- bin_test/
+|-- src_test/
+|   |-- __init__.py
 |   |-- feature1
 |       |-- __init__.py
-|       |-- module1
-|       |-- module2
+|       |-- module1.py
+|       |-- module2.py
 |   |-- feature2
 |       |-- __init__.py
-|       |-- module1
+|       |-- module1.py
 |
-|-- project/
-|   |-- __init__.py
-|   |-- main.py
-|
-|-- project_test/
-|   |-- __init__.py
-|   |-- test_main.py
-|
-|-- setup.py
+|-- main.py
+|-- .gitignore
 |-- requirements.txt
-|-- README
+|-- README.md
 ```
 
-Note : Mettre un fichier init dans chaque dossier pour le balisage et permettre à python de pouvoir faire les import des functions des autres dossiers
+Note : Mettre un fichier "\_\_init\_\_.py" dans chaques dossiers pour le balisage et permettre à python de pouvoir faire les imports des functions des autres dossiers
