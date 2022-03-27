@@ -1,6 +1,6 @@
 from dash import Dash, dcc, html, Input, Output
 import pandas as pd
-from src.essais.compute_wallet import fetch_wallet_balance
+from src.app.feature1.compute_wallet import fetch_wallet_balance
 import json
 
 app = Dash(__name__)
