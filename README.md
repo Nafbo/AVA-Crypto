@@ -58,24 +58,25 @@ Mise en place d'une stratégie de mise à jour de l'application. Les différents
 ```
 project/
 |-- src/
-|   |-- __init__.py
-|   |-- feature1
-|       |-- __init__.py
-|       |-- module1.py
-|       |-- module2.py
-|   |-- feature2
-|       |-- __init__.py
-|       |-- module1.py
+|   |-- app
+|      |-- __init__.py
+|      |-- feature1
+|          |-- __init__.py
+|          |-- module1.py
+|          |-- module2.py
+|       |-- feature2
+|          |-- __init__.py
+|          |-- module1.py
 |
-|-- src_test/
-|   |-- __init__.py
-|   |-- feature1
+|   |-- app_test/
 |       |-- __init__.py
-|       |-- module1.py
-|       |-- module2.py
-|   |-- feature2
-|       |-- __init__.py
-|       |-- module1.py
+|       |-- feature1
+|           |-- __init__.py
+|           |-- module1.py
+|           |-- module2.py
+|       |-- feature2
+|           |-- __init__.py
+|           |-- module1.py
 |
 |-- main.py
 |-- .gitignore
