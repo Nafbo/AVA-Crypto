@@ -152,4 +152,4 @@ def multiplication(a, b):
 print(add_binary.__doc__)
 ```
 
-Elle est générable automatiquement en tappant en dessous de la fonction trois fois le double quotte """ puis en faisant entrée.
+Elle est générable automatiquement en tappant trois fois le double quotte """ en dessous de la première ligne de la fonction puis en faisant entrée.
