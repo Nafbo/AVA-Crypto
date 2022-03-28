@@ -5,6 +5,8 @@ import json
 
 app = Dash(__name__)
 
+server = app.server
+
 app.layout = html.Div([
     dcc.Input(
         id='my-input', 

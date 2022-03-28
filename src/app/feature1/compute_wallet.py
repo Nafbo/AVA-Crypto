@@ -4,6 +4,14 @@ import pandas as pd
 
 
 def wallet_balance(address):
+    """_summary_
+
+    Args:
+        address (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     api_key = 'ckey_4e20bd1de6b3424c81eefbd7157'
     chain_id = '1' #ETH
     formatage = "balances_v2"  # ->Soldes / 'transactions_v2' -> Opérations / 'transfers_v2' -> Transfers
