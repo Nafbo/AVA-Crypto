@@ -46,6 +46,8 @@ cd <RACINE-DU-PROJET>
 export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 ```
 
+Vous pouvez aussi exécuter le fichier "env_var_setup.sh" à la racine du répo. Cette action est nécessaire à chaque fois que vous utilisez un nouveau terminal.
+
 <br/>
 
 ## Conteneurisation 
