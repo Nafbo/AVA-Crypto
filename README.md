@@ -80,7 +80,7 @@ Vous avez du remarquer qu'il y avait un fichier .dockerignore en plus à la raci
 
 ## Hébergement
 
-Pour l'hébergement de l'application je vous avais initialement parlé d'AWS comme cloud provider. Finalement je vous propose un autre service plus simple à prendre en main, Heroku. Cela vous permettra de passer davantage de temps à développer de nouvelle fonctionnalité et moins de temps sur la partie infra et en particulier sur un cloud provider avec des centaines de service et une certaine complexité.
+Pour l'hébergement de l'application je vous avais initialement parlé d'AWS comme cloud provider. Finalement je vous propose un autre service plus simple à prendre en main, Heroku. Cela vous permettra de passer davantage de temps à développer de nouvelle fonctionnalité et moins de temps sur la partie infra et en particulier sur un cloud provider avec des centaines de service et une certaine complexité. Petit comparatif d'AWS et Heroku : https://www.qovery.com/blog/heroku-vs-aws-what-to-choose-as-a-startup
 
 Pour prendre en main Heroku qui est une PaaS (Plateform as a Service, je vous laisse faire vos recherches là-dessus), je vous conseille leur documentation officiel dans laquelle il y a un tutoriel bien fait pour déployer une application python sur leur plateforme : https://devcenter.heroku.com/articles/getting-started-with-python
 
@@ -88,6 +88,22 @@ Enfin ce tuto vous explique comment fonctionne et comment mettre en place toute 
 
 Vous pouvez tester de déployer ma branche sur heroku. J'ai mis l'ensemble des fichiers nécessaires pour ce que ça marche.
 
+### Pour tester mon code :
+
+Commencez par faire les tutos au-dessus. Ils faut que vous ayez un compte sur heroku et que vous ayez fait la commande de loging. 
+
+```bash
+# Aller sur ma branche : 
+git checkout Esme
+
+# Initialiser le projet heroku : 
+heroku create
+
+# Pusher le code sur le repository de heroku sur la branche main en précisant la branche de travail : 
+git push heroku Esme:main        
+```
+
+Après ça l'application est disponible sur le web à l'adresse généré sur votre terminal.
 
 <br/>
 
