@@ -62,14 +62,32 @@ Les étapes de déploiement de l'image sont les suivantes :
 ```bash
 # 1 - Création du dockerfile
 
-# 2 - Build de l'image (après s'être placé à côté du dockerfile)
+# 2 - Build de l'image (après s'être placé à côté du dockerfile) :
 docker build -t <IMAGE-NAME>
 
-# 3- Run de l'image 
-docker run -p 0.0.0.0:8080 --name <APP-NAME> <IMAGE-NAME>
+# 3- Run de l'image :
+docker run -p 8080:80 --name <APP-NAME> <IMAGE-NAME>
+
+# 4- Accèder à l'application en local à l'adresse :
+http://localhost:8080/
 ```
 
+La dernière commande permet de démarrer le container basé sur <IMAGE-NAME> souhaité. Le flag "--name" permet de nommer le container pour ensuite faire des actions dessus avec un nom personnalisé, sinon par défaut un ID est généré pour votre container. Enfin le flag "-p" permet de mapper le port 80 du container vers l'adresse local de votre machine sur le port 8080. Si vous regardez le dockerfile vous verrez qu'on a spécifié d'exposer l'application sur le port 80 du container.
+ 
 Vous avez du remarquer qu'il y avait un fichier .dockerignore en plus à la racine du projet. Celui-ci à la manière du .gitignore permet de filtrer ce qui va être copier lors de la création de l'image de l'application. Cela permet de ne pas la surcharger et qu'elle puisse être rapidement déployable. Dans certains cas c'est aussi dans un souci de sécurité et de confidentialité, pour ne pas stocker des données qui peuvent être sensible (comme des données utilisateurs, des crédentials et autres).
+
+<br/>
+
+## Hébergement
+
+Pour l'hébergement de l'application je vous avais initialement parlé d'AWS comme cloud provider. Finalement je vous propose un autre service plus simple à prendre en main, Heroku. Cela vous permettra de passer davantage de temps à développer de nouvelle fonctionnalité et moins de temps sur la partie infra et en particulier sur un cloud provider avec des centaines de service et une certaine complexité.
+
+Pour prendre en main Heroku qui est une PaaS (Plateform as a Service, je vous laisse faire vos recherches là-dessus), je vous conseille leur documentation officiel dans laquelle il y a un tutoriel bien fait pour déployer une application python sur leur plateforme : https://devcenter.heroku.com/articles/getting-started-with-python
+
+Enfin ce tuto vous explique comment fonctionne et comment mettre en place toute la stack technique que nous allons utiliser pour rendre notre application disponible pas nos utilisateurs. C'est un peu long mais après ça vous êtes des pros : https://towardsdatascience.com/deploying-your-dash-app-to-heroku-the-magical-guide-39bd6a0c586c
+
+Vous pouvez tester de déployer ma branche sur heroku. J'ai mis l'ensemble des fichiers nécessaires pour ce que ça marche.
+
 
 <br/>
 
@@ -151,7 +169,7 @@ def multiplication(a, b):
     return product
 
 
-print(add_binary.__doc__)
+print(add_binary.__doc__) #Permet d'afficher la documentation de la fonction
 ```
 
 Elle est générable automatiquement en tappant trois fois le double quotte """ en dessous de la première ligne de la fonction puis en faisant entrée.
