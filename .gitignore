@@ -3,3 +3,4 @@ venv
 src/essais/__pycache__
 __pycache__
 .vscode
+env
