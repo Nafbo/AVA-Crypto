@@ -3,10 +3,10 @@ backcall==0.2.0
 Brotli==1.0.9
 certifi==2021.10.8
 charset-normalizer==2.0.12
-click==8.1.0
+click==8.0.4
 colorama==0.4.4
 cycler==0.11.0
-dash==2.3.1
+dash==2.3.0
 dash-core-components==2.0.0
 dash-html-components==2.0.0
 dash-table==5.0.0
@@ -16,9 +16,10 @@ distlib==0.3.4
 entrypoints==0.4
 executing==0.8.3
 filelock==3.6.0
-Flask==2.1.0
+Flask==2.0.3
 Flask-Compress==1.11
 fonttools==4.31.1
+gunicorn==20.1.0
 idna==3.3
 ipykernel==6.9.2
 ipython==8.1.1
@@ -49,7 +50,7 @@ pure-eval==0.2.2
 Pygments==2.11.2
 pyparsing==3.0.7
 python-dateutil==2.8.2
-pytz==2021.3
+pytz==2022.1
 pywin32==303
 pyzmq==22.3.0
 requests==2.27.1
@@ -66,4 +67,4 @@ traitlets==5.1.1
 urllib3==1.26.9
 virtualenv==20.14.0
 wcwidth==0.2.5
-Werkzeug==2.1.0
+Werkzeug==2.0.3
