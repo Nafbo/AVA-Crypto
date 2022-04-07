@@ -1,5 +1,5 @@
-from src.app_test.feature.link_address import link_address
-from src.app_test.feature.wallet import wallet
+from src.app.feature.link_address import link_address
+from src.app.feature.wallet import wallet
 import pandas as pd
 
 def wallet_total(address):

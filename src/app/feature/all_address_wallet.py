@@ -1,4 +1,4 @@
-from src.app_test.feature.wallet_total import wallet_total
+from src.app.feature.wallet_total import wallet_total
 
 def all_address_wallet(wallets):
     for i in range(len(wallets)):
