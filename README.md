@@ -151,6 +151,11 @@ Note : Mettre un fichier "\_\_init\_\_.py" dans chaque dossiers pour le balisage
 
 </br>
 
+## GitOps et Gestion des branches 
+
+Git comme vous avez du le sentir est un outils extrément puissant pour le développement d'application, mais pas seulement pour vous permettre de collaborer. Il permet aussi de garder un historique de l'ensemble des versions de votre application. Ainsi si vous faites des modifications dans votre code et que cela entraine la destruction de votre application... Avec git vous avez la possibilité de faire un roll back en reprenant une ancienne verion de votre code et rebaser votre application sur cette version là. 
+Le paradigme GitOps ce base essentiellement sur ce principe poussé à son extrème. C'est établir que la seul source de vérité de votre application est détenu dans le répo git. Jusqu'a présent nous parlions du code de l'application mais nous pouvons aussi stocker le code de l'infrastructure cloud et/ou de votre environnement et des différentes pipeline de CI/CD. De plus cela permet à quiconque d'avoir une vue sur l'ensemble des configurations de votre application juste en se connectant au répo git.
+
 ## Documentation
 
 Pour faciliter la lecture et l'appropriation de votre code par un autre développeur il est nécessaire de documenter votre code.
