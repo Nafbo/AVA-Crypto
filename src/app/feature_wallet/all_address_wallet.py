@@ -1,5 +1,6 @@
 from link_address_balance import link_address_balance
 import pandas as pd
+import numpy as np
 
 def all_address_wallet(addresses):
     for i in range(len(addresses)):
@@ -21,6 +22,11 @@ def all_address_wallet(addresses):
         cf = pd.DataFrame(crypto_response)
         cf = cf.sort_values(by=['Name'] ,ascending=True)
     return(cf, total)
+
+
+if __name__ == '__main__':
+    print(all_address_wallet(np.array([["0x102e0206113e2b662ea784eb5db4e8de1d18c8ae",1], ["0x68a01e1b22790c3b074a7cfe4b522de16c4367ef", 56]])))
+
 
 '''
 Fonction qui prend une matrice 2x2 avec l'adresse et le numero de la blockchain sur une meme ligne "[i,0]->adresse;

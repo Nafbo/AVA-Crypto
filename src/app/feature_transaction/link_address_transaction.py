@@ -9,8 +9,13 @@ def link_address_transaction(address, chain_id):
     
     r = rq.get(url).json()['data']['items']
     df = pd.DataFrame(r)
-    return(df)
+    return(r[1])
 
+
+if __name__ == '__main__':
+    print(link_address_transaction("0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1))
+    
+    
 '''
 Fonction qui prend en argument une adresse et le numero de la blockchain.
 Et qui retourne une DataFrame comprenant les élément neccesaire pour annalyser les transactions du wallet

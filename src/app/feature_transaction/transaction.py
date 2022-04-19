@@ -1,8 +1,8 @@
-import pandas as pd
-from datetime import datetime
 from link_address_transaction import link_address_transaction 
-from datetime import datetime
+from link_address_one_transaction import link_address_one_transaction
+import pandas as pd
 from time import *
+import dateutil.parser
 
 def transaction(address,chain_id):
     df= link_address_transaction(address,chain_id)
@@ -11,41 +11,46 @@ def transaction(address,chain_id):
     
     for i in range(len(df)):
         x = df.loc[i]
-        chain_id_list = {1: "ETH", 
-             137:"MATIC",
-             43114: "AVAX",
-             56:"BSC",
-             250:"FTM",}
         if x['from_address'] == address:
-            transaction['type'] = "Send"
+            transaction['Type'] = "Send"
             y = int(x["value"])*(10**(-18))
-            transaction['value'] = format(-y,'.4f')
+            transaction['Balance'] = format(-y,'.5f')
+            transaction['Holdings (en USD)'] = format(-x['value_quote'], '.5f')
         else:
-            transaction['type'] = "Receive"
+            transaction['Type'] = "Receive"
             y = int(x["value"])*(10**(-18))
-            transaction['value'] = format(y,'.4f')
+            transaction['Balance'] = format(y,'.5f')
+            transaction['Holdings (en USD)'] = format(x['value_quote'], '.5f')
+
+        hash = x['log_events']
+        if hash == []:
+             transaction['Name'] = 'None'
+        else:
+            transaction['Name'] = hash[0]['sender_contract_ticker_symbol']
         
-        transaction['crypto'] = chain_id_list[chain_id]
-        transaction['from'] = x['from_address']
-        transaction['to'] = x['to_address']
+        
+        transaction['From'] = x['from_address']
+        transaction['To'] = x['to_address']
         
         date = x['block_signed_at']
-        import dateutil.parser
         date = dateutil.parser.isoparse(date)
-        transaction['date'] = date.strftime("%Y-%m-%d %Hh:%Mm")
+        transaction['Date'] = date.strftime("%Y-%m-%d %Hh:%Mm")
         
         if x['successful'] == True:
-            transaction['successful'] = 'Confirmed'
+            transaction['Successful'] = 'Confirmed'
         else:
-            transaction['successful'] = 'Failed'
+            transaction['Successful'] = 'Failed'
         
         transaction_response.append(transaction)
         transaction = {}
         
     cf = pd.DataFrame(transaction_response)
-    cf = cf.sort_values(by=['date'] ,ascending=True)       
+    cf = cf.sort_values(by=['Date'] ,ascending=True)       
     return (cf)
 
+
+if __name__ == '__main__':
+    print(transaction("0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1))
 
 '''
 Cette fonction prend pour argument l'adresse du portefeuille et la blockchain.
