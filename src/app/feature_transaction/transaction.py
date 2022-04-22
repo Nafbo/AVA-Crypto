@@ -1,5 +1,4 @@
 from link_address_transaction import link_address_transaction 
-from link_address_one_transaction import link_address_one_transaction
 import pandas as pd
 from time import *
 import dateutil.parser
@@ -50,7 +49,7 @@ def transaction(address,chain_id):
 
 
 if __name__ == '__main__':
-    print(transaction("0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1))
+    print(transaction("0xf3ad8b3012f54dbadbb92bbd781249d09eea26da", 56))
 
 '''
 Cette fonction prend pour argument l'adresse du portefeuille et la blockchain.
