@@ -162,7 +162,7 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                 dbc.CardBody([
                     dcc.Graph(id='hist', figure={}, style={"height": "95%"}),
                 ]),
-            ], className='card border-light mb-3', style={"height": "100%", 'width' :'51rem'}),
+            ], className='card border-light mb-3', style={"height": "100%", 'width' :'67%'}),
         ],),
     ], ),  
 
