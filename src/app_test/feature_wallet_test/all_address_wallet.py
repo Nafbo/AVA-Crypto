@@ -2,7 +2,6 @@ from link_address_balance import link_address_balance
 import pandas as pd
 import numpy as np
 
-
 def all_address_wallet(addresses):
     for i in range(len(addresses)):
         df= link_address_balance(addresses[i,0], addresses[i,1])
@@ -27,7 +26,6 @@ def all_address_wallet(addresses):
 
 if __name__ == '__main__':
     print(all_address_wallet(np.array([["0x102e0206113e2b662ea784eb5db4e8de1d18c8ae",1], ["0x68a01e1b22790c3b074a7cfe4b522de16c4367ef", 56]])))
-
 
 
 '''

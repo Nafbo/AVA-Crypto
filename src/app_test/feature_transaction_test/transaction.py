@@ -3,7 +3,6 @@ import pandas as pd
 from time import *
 import dateutil.parser
 
-
 def transaction(address,chain_id):
     df= link_address_transaction(address,chain_id)
     transaction = {}
@@ -11,6 +10,11 @@ def transaction(address,chain_id):
     
     for i in range(len(df)):
         x = df.loc[i]
+        chain_id_list = {1: "ETH", 
+             137:"MATIC",
+             43114: "AVAX",
+             56:"BSC",
+             250:"FTM",}
         if x['from_address'] == address:
             transaction['Type'] = "Send"
             y = int(x["value"])*(10**(-18))
@@ -21,14 +25,8 @@ def transaction(address,chain_id):
             y = int(x["value"])*(10**(-18))
             transaction['Balance'] = format(y,'.5f')
             transaction['Holdings (en USD)'] = format(x['value_quote'], '.5f')
-
-        hash = x['log_events']
-        if hash == []:
-             transaction['Name'] = 'None'
-        else:
-            transaction['Name'] = hash[0]['sender_contract_ticker_symbol']
         
-        
+        transaction['Chain_id'] = chain_id_list[chain_id]
         transaction['From'] = x['from_address']
         transaction['To'] = x['to_address']
         
@@ -40,7 +38,6 @@ def transaction(address,chain_id):
             transaction['Successful'] = 'Confirmed'
         else:
             transaction['Successful'] = 'Failed'
-
         
         transaction_response.append(transaction)
         transaction = {}
@@ -51,8 +48,7 @@ def transaction(address,chain_id):
 
 
 if __name__ == '__main__':
-    print(transaction("0xf3ad8b3012f54dbadbb92bbd781249d09eea26da", 56))
-
+    print(transaction("0x732a725df61e32fc9450ca9df7092c6ce6339b24", 1))
 
 '''
 Cette fonction prend pour argument l'adresse du portefeuille et la blockchain.

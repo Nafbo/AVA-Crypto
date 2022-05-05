@@ -12,9 +12,7 @@ def wallet(address,chain_id):
         crypto["Name"] = x["contract_ticker_symbol"]
         y = int(x["balance"])*(10**(-int(x["contract_decimals"])))
         crypto["Balance"] = format(y,'.5f')
-
         crypto["Holdings (en USD)"] = format(x['quote'], ".5f")
-
         crypto["Profit/Loss"] = format((y*x['quote_rate']) - (y*x['quote_rate_24h']), '.5f')
         total += x['quote']
         
@@ -24,7 +22,6 @@ def wallet(address,chain_id):
     cf = cf.sort_values(by=['Name'] ,ascending=True)
 
     return(cf, total)
-
 
 if __name__ == '__main__':
     print(wallet("0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1))

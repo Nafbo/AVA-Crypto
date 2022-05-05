@@ -1,13 +1,15 @@
 import dash
 from dash import Dash, dcc, html
 import pandas as pd
-from main import df,dff
+import sys
+sys.path.insert(0, '../feature')
+import unittest
+from main_feature import *
+data=df
 
-data = df
-dataa=dff
-'''data.sort_values("Balance", inplace=True)'''
 
 app = dash.Dash(__name__)
+
 
 
 app.layout = html.Div(
@@ -45,14 +47,26 @@ app.layout = html.Div(
             figure={
                 "dataa": [
                     {
-                        "x": dataa["contract_name"],
-                        "y": dataa["contract_decimals"],
+                        "x": data["contract_name"],
+                        "y": data["contract_decimals"],
                         "type": "lines",
                     },
                 ],
                 "layout": {"title": "Balance plus"},
             },
         ),
+
+        dcc.Graph(
+            figure={
+                'data': [
+                    {'x': data["Name"], 'y': data["Profit/Loss"], 'type': 'bar', 'name': data["Name"]},
+                ],
+                'layout': {
+                    'title': 'Dash Data Visualization'
+                }
+            }
+        )
+
     ]
 )
 
