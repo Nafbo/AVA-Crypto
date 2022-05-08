@@ -3,6 +3,7 @@ import pandas as pd
 from time import *
 import dateutil.parser
 
+
 def transaction(address,chain_id):
     df= link_address_transaction(address,chain_id)
     transaction = {}
@@ -40,6 +41,7 @@ def transaction(address,chain_id):
             transaction['Successful'] = 'Confirmed'
         else:
             transaction['Successful'] = 'Failed'
+
         
         transaction_response.append(transaction)
         transaction = {}
@@ -51,6 +53,7 @@ def transaction(address,chain_id):
 
 if __name__ == '__main__':
     print(transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1))
+
 
 '''
 Cette fonction prend pour argument l'adresse du portefeuille et la blockchain.
