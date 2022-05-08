@@ -1,6 +1,7 @@
 # -----IMPORT -----------------------------------------------------
 from tracemalloc import stop
 import dash
+import dash_table
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Output, Input
@@ -8,12 +9,16 @@ import  dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
 import base64
+from src.app.feature_history import wallet_history
+import matplotlib.pyplot as plt
 
 # ------- INITIALISATION DATA --------------------------------------------------------
 wallet=pd.read_csv("src/app/dash_Alice/ressources/wallet_ex.csv")    
 wallet["Name"].fillna("Unknown", inplace=True)
 #print (wallet)
 default_name=wallet['Name'].head(3)
+
+wallet_history
 
 app=dash.Dash(__name__, external_stylesheets=[dbc.themes.QUARTZ],    
             meta_tags=[{'name': 'viewport',       # permet à l'app d'être responsive pour téléphone  
@@ -113,14 +118,14 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
         dbc.Col([
             dbc.Card([
                 dbc.CardHeader([
-                    "Your transaction"
+                    "Wallet History"
                 ]),
 
                 dbc.CardBody([
-                    ".->. ........... 3$"
+                    dcc.Graph(id="line-hist", figure={})
                     
                 ]),
-            ],style={"height": "244%"}, className='card border-light')
+            ],style={"height": "95%"}, className='card border-light mb-3')
         ])
     ],   ),#justify : gère les espaces : start, center, end, between, around // pour que ça marche avoir des colonnes en "stock" ; justify='around'
     
@@ -162,12 +167,28 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                 dbc.CardBody([
                     dcc.Graph(id='hist', figure={}, style={"height": "95%"}),
                 ]),
-            ], className='card border-light mb-3', style={"height": "100%", 'width' :'67%'}),
+            ], className='card border-light mb-3', style={"height": "100%"}),
         ],),
+        
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader([
+                    "Your transaction"
+                ]),
+
+                dbc.CardBody([
+                    ".->. ........... 3$"
+                    
+                ]),
+            ],style={"height": "100%"}, className='card border-light')
+        ])
     ], ),  
+    
+    
 
 
 ],
+                          
 fluid = True, #permet d'étirer à la largeur de la page web
 )
 
@@ -200,6 +221,14 @@ def update_graph(stock_slctd):
     figln2 = px.pie(wallet_slctd, names='Name', values='Balance', color='Name', hover_name='Name', hole=.4)
     return figln2
 
+@app.callback(
+    Output('line-hist', 'figure'),
+    Input('Graph', 'value')
+)
+def update_graph(stock_slctd):
+    wallet_slctd = history.isin(stock_slctd)
+    fighist1 = px.pie(wallet_slctd, names='Date', values='holding (en USD)', color='Name', hover_name='Name')
+    return fighist1
 
 # Histogram
 @app.callback(

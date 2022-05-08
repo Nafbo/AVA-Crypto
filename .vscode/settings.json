@@ -1,3 +1,7 @@
 {
-    "jupyter.jupyterServerType": "local"
+    "jupyter.jupyterServerType": "local",
+    "python.analysis.extraPaths": [
+        "./src/app/feature_history",
+        "./src/app/feature_history"
+    ]
 }
