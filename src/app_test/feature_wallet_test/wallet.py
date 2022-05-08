@@ -24,7 +24,7 @@ def wallet(address,chain_id):
     return(cf, total)
 
 if __name__ == '__main__':
-    print(wallet("0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1))
+    print(wallet("0xd5Ac26b0FE1D3Ae9A7679cD92598fF02d79A9E26", 1))
 
 '''
 Fonction qui prend une adresse et le numero de la blockchain en argument.

@@ -10,25 +10,27 @@ def transaction(address,chain_id):
     
     for i in range(len(df)):
         x = df.loc[i]
-        chain_id_list = {1: "ETH", 
-             137:"MATIC",
-             43114: "AVAX",
-             56:"BSC",
-             250:"FTM",}
-        if x['from_address'] == address:
+        if x['transfers' ][0]['transfer_type'] == 'OUT':
             transaction['Type'] = "Send"
-            y = int(x["value"])*(10**(-18))
+            y = int(x['transfers'][0]["delta"])*(10**(-x['transfers'][0]['contract_decimals']))
             transaction['Balance'] = format(-y,'.5f')
-            transaction['Holdings (en USD)'] = format(-x['value_quote'], '.5f')
+            if x['transfers'][0]['delta_quote'] == None:
+                transaction['Holdings (en USD)'] = 'None'
+            else:
+                transaction['Holdings (en USD)'] = format(-x['transfers'][0]['delta_quote'], '.5f')
         else:
             transaction['Type'] = "Receive"
-            y = int(x["value"])*(10**(-18))
+            y = int(x['transfers'][0]["delta"])*(10**(x['transfers'][0]['contract_decimals']))
             transaction['Balance'] = format(y,'.5f')
-            transaction['Holdings (en USD)'] = format(x['value_quote'], '.5f')
+            if x['transfers'][0]['delta_quote'] == None:
+                transaction['Holdings (en USD)'] = 'None'
+            else:
+                transaction['Holdings (en USD)'] = format(x['transfers'][0]['delta_quote'], '.5f')        
         
-        transaction['Chain_id'] = chain_id_list[chain_id]
-        transaction['From'] = x['from_address']
-        transaction['To'] = x['to_address']
+        transaction['Name'] = x['transfers'][0]['contract_ticker_symbol']
+        
+        transaction['From'] = x['transfers'][0]['from_address']
+        transaction['To'] = x['transfers'][0]['to_address']
         
         date = x['block_signed_at']
         date = dateutil.parser.isoparse(date)
@@ -43,12 +45,12 @@ def transaction(address,chain_id):
         transaction = {}
         
     cf = pd.DataFrame(transaction_response)
-    cf = cf.sort_values(by=['Date'] ,ascending=True)       
+    cf = cf.sort_values(by=['Date'] ,ascending=False)       
     return (cf)
 
 
 if __name__ == '__main__':
-    print(transaction("0x732a725df61e32fc9450ca9df7092c6ce6339b24", 1))
+    print(transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1))
 
 '''
 Cette fonction prend pour argument l'adresse du portefeuille et la blockchain.
