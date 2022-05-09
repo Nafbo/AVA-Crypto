@@ -1,4 +1,4 @@
-from link_address_balance import link_address_balance
+from src.app.feature_wallet.link_address_balance import link_address_balance
 import pandas as pd
 
 def wallet(address,chain_id):
@@ -12,7 +12,9 @@ def wallet(address,chain_id):
         crypto["Name"] = x["contract_ticker_symbol"]
         y = int(x["balance"])*(10**(-int(x["contract_decimals"])))
         crypto["Balance"] = format(y,'.5f')
-        crypto["Holdings"] = format(x['quote'], ".5f")
+
+        crypto["Holdings (en USD)"] = format(x['quote'], ".5f")
+
         crypto["Profit/Loss"] = format((y*x['quote_rate']) - (y*x['quote_rate_24h']), '.5f')
         total += x['quote']
         
@@ -22,6 +24,10 @@ def wallet(address,chain_id):
     cf = cf.sort_values(by=['Name'] ,ascending=True)
 
     return(cf, total)
+
+
+if __name__ == '__main__':
+    print(wallet("0xd5Ac26b0FE1D3Ae9A7679cD92598fF02d79A9E26", 1))
 
 '''
 Fonction qui prend une adresse et le numero de la blockchain en argument.

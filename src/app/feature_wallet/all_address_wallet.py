@@ -1,4 +1,4 @@
-from link_address_balance import link_address_balance
+from src.app.feature_wallet.link_address_balance import link_address_balance
 import pandas as pd
 import numpy as np
 
