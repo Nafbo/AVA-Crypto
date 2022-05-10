@@ -1,4 +1,4 @@
-from link_address_balance import link_address_balance
+from src.app.feature_wallet.link_address_balance import link_address_balance
 import pandas as pd
 
 def wallet(address,chain_id):
@@ -28,6 +28,13 @@ def wallet(address,chain_id):
 
 if __name__ == '__main__':
     print(wallet("0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1))
+    cf , total = wallet("0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1)
+    dff= cf[cf['Name'] == 'ETH']
+    # balance_text = "{}".format(dff['Balance'])
+    # balance_split = balance_text.split('\n',1)[0].split('    ',1)[1]
+    balance_text = dff['Balance'][1]
+    print("Balance : ",balance_text)
+
 
 '''
 Fonction qui prend une adresse et le numero de la blockchain en argument.
