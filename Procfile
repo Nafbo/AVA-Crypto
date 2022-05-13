@@ -1,1 +1,1 @@
-web: gunicorn avacrypto:app 
+web: gunicorn src.app.dash:app 
