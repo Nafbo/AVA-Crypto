@@ -1,1 +1,1 @@
-web: gunicorn src.app.dash:app
+web: gunicorn --chdir ./src/dash app:app
