@@ -29,10 +29,10 @@ default_name=wallet['Name'].head(1)
 wallet_history = wallet_history(adress_curent, blockchain)
 history = px.line(wallet_history, x='Date', y='Holdings (en USD)')
 
-image_filename = 'src/app/dash_Alice/ressources/AVA_logo.png'
+image_filename = 'src/app/dash/ressources/AVA_logo.png'
 encoded_image = base64.b64encode(open(image_filename, 'rb').read())  
 
-button_filename = 'src/app/dash_Alice/ressources/AVA_button.png'
+button_filename = 'src/app/dash/ressources/AVA_button.png'
 encoded_image_button = base64.b64encode(open(button_filename, 'rb').read())
 
 # ------- APP -----------------------------------------------------------
