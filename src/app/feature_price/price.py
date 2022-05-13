@@ -6,9 +6,9 @@ def price(crypto):
     r = cg.get_price(ids=crypto, vs_currencies='usd', include_24hr_change='true')
     price = pd.DataFrame(r)
     if price[crypto]['usd_24h_change'] >=0:
-        return(price, 'green')
+        return(price[crypto]['usd'], 'green')
     else :
-        return(price, 'red')
+        return(price[crypto]['usd'], 'red')
 
 if __name__ == '__main__':
     print(price('bitcoin'))
