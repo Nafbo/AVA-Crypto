@@ -1,1 +1,1 @@
-web: gunicorn ..src.app.dash.app:app 
+web: gunicorn main:main 
