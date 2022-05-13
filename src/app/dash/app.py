@@ -47,6 +47,7 @@ app=dash.Dash(__name__, external_stylesheets=[dbc.themes.QUARTZ],  #dbc.themes.Z
                      
             )
 
+server=app.server
 # ------- LAYOUT --------------------------------------------------------
 
 app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
