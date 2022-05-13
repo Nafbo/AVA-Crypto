@@ -244,8 +244,8 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
             ], className='card border-light'),
         ],width=7),
     ]),  
-]),
-fluid = True, #permet d'étirer à la largeur de la page web
+],fluid = True)
+ #permet d'étirer à la largeur de la page web
 
 
 # width={'size':5, 'offset':0, 'order':2}, #offset decale de 2 colonnes à gauche
