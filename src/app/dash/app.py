@@ -297,6 +297,6 @@ def update_output_temps_reel(value_slctd):
     
 
 # ------- RUN APP --------------------------------------------------------
-if __name__=='__main__':
-    app.run_server(debug=True)  
+def launch_app():
+    return app.run_server(debug=True)  
 
