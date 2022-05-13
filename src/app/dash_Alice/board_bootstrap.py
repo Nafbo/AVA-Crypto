@@ -4,7 +4,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Output, Input
-import  dash_bootstrap_components as dbc
+import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
 import base64
@@ -13,6 +13,7 @@ import plotly.graph_objs as go
 
 from src.app.feature_wallet.wallet import wallet
 from src.app.feature_history.wallet_history import wallet_history
+from src.app.feature_price.price import price
 
 # ------- INITIALISATION DATA --------------------------------------------------------
 # wallet=pd.read_csv("src/app/dash_Alice/ressources/wallet_ex.csv")    
@@ -160,13 +161,12 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                     dcc.Dropdown(id='dropdown_temps_reel',
                         multi=False, #peut choisir qu'une seule valeur
                         value=default_name, #valeur par defaut 
-                        options=[{'label':x, 'value':x} 
-                                    for x in sorted(wallet['Name'].unique())] #choisis les valeurs selon la colonne Name : .unique() prends que les valeurs 1 fois sans duplicats
+                        options=["bitcoin","ethereum","cardano"] #choisis les valeurs selon la colonne Name : .unique() prends que les valeurs 1 fois sans duplicats
                         ),
                 ]),
 
                 dbc.CardBody(
-                        html.Div(id='temps_reel_output', children="call back not executed",className="card-body")
+                        html.Div({},id='temps_reel_output',className="card-body")
 
                 )
 
@@ -277,12 +277,24 @@ def update_graph(value_slctd):
     Output("details_output", "children"),
     Input('dropdown_details', 'value')
 )
-def update_output(value_slctd):
+def update_output_details(value_slctd):
     dff = wallet[wallet['Name']==value_slctd]
     balance = "{}".format(dff['Balance']).split('\n',1)[0].split('    ',1)[1]
     holdings = "{}".format(dff['Holdings (en USD)']).split('\n',1)[0].split('    ',1)[1]
     profit = "{}".format(dff['Profit/Loss']).split('\n',1)[0].split('    ',1)[1]
     return "Balance : ",balance,"\n"," Holdings (en USD) : ",holdings, "\n", "Profit/Loss : " , profit
+
+#temps_reel_output
+@app.callback(
+    Output("temps_reel_output","children"),
+    Input("dropdown_temps_reel","value")
+)
+
+def update_output_temps_reel(value_slctd):
+    price_tps = price(value_slctd)
+    print (price_tps)
+    return price_tps
+    
 
 # ------- RUN APP --------------------------------------------------------
 if __name__=='__main__':
