@@ -9,17 +9,21 @@ import plotly.express as px
 import pandas as pd
 import base64
 import plotly.graph_objs as go
+from dash import Dash, dash_table
 
 
 from src.app.feature_wallet.wallet import wallet
 from src.app.feature_history.wallet_history import wallet_history
 from src.app.feature_price.price import price
-
+from src.app.feature_transaction.transaction import transaction
 # ------- INITIALISATION DATA --------------------------------------------------------
 # wallet=pd.read_csv("src/app/dash_Alice/ressources/wallet_ex.csv")    
 # wallet["Name"].fillna("Unknown", inplace=True)
 #print (wallet("0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1))
 
+
+default_transaction=transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1).head(10)
+print(default_transaction)
 # "0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1
 adress_curent = "0xCBD6832Ebc203e49E2B771897067fce3c58575ac"
 blockchain = 1
@@ -176,16 +180,36 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
         dbc.Col([
             dbc.Card([
                 dbc.CardHeader([
-                    "Your transaction"
+                    html.H4("Transactions"),
                 ]),
 
                 dbc.CardBody([
-                    ".->. ........... 3$"
-                    
-                ]),
-            ],style={"height": "200%"}, className='card border-light')
-        ], width=3)      
-    ]),
+                    html.Div([
+                        dash_table.DataTable(
+                            data=default_transaction.to_dict('records'),
+                            columns=[{'id': c, 'name': c} for c in default_transaction.columns],
+                            style_as_list_view=True,
+                            style_cell={'padding': '5px'},
+                            style_header={
+                                'backgroundColor': 'rgb(30, 30, 30)',
+                                'color': 'white',
+                                'fontWeight': 'bold'
+                            },
+                            style_data={
+                                'backgroundColor': 'rgb(50, 50, 50)',
+                                'color': 'white'
+                            }, 
+                            
+                            
+                        ),
+                     
+                    ]),
+                   
+                ]), 
+            ]),
+            
+        ]), 
+    ]),      
 
     dbc.Row([
         dbc.Col([
@@ -219,14 +243,10 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                 ]),
             ], className='card border-light'),
         ],width=7),
-
-        
-    ], ),  
-
-
-],
+    ]),  
+]),
 fluid = True, #permet d'étirer à la largeur de la page web
-)
+
 
 # width={'size':5, 'offset':0, 'order':2}, #offset decale de 2 colonnes à gauche
 # no_gutters= False,  l'espace entre les 2 éléments / True = pas d'espace ; False = espace
