@@ -50,9 +50,13 @@ def transaction(address,chain_id):
     cf = cf.sort_values(by=['Date'] ,ascending=False)       
     return (cf)
 
+transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1)['From']=transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1)['From'].str.lower()
 
+print(transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1)['From'].head(5))
+'''
 if __name__ == '__main__':
     print(transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1))
+'''
 
 
 '''
@@ -61,3 +65,5 @@ Pour afficher toutes les transactions de ce portefeuille: savoir si c'est reçu 
 Le portefeuille d'envoyeur "from", le portefeuille du receveur "to", la date du transfert "date".
 Ainsi que si c'est la transaction a été réussite ou pas "successful"
 '''
+
+
