@@ -61,3 +61,5 @@ Pour afficher toutes les transactions de ce portefeuille: savoir si c'est reçu 
 Le portefeuille d'envoyeur "from", le portefeuille du receveur "to", la date du transfert "date".
 Ainsi que si c'est la transaction a été réussite ou pas "successful"
 '''
+
+
