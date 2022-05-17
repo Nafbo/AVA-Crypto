@@ -29,8 +29,15 @@ default_name=wallet['Name'].head(1)
 wallet_history = wallet_history(adress_curent, blockchain)
 history = px.line(wallet_history, x='Date', y='Holdings (en USD)')
 
-image_filename = 'src/app/dash/ressources/AVA_logo.png'
-encoded_image = base64.b64encode(open(image_filename, 'rb').read())  
+image_ava_filename = 'src/app/dash/ressources/AVA_logo.png'
+encoded_image_ava = base64.b64encode(open(image_ava_filename, 'rb').read()) 
+
+image_plus_filename = 'src/app/dash/ressources/plus.png'
+encoded_image_plus = base64.b64encode(open(image_plus_filename, 'rb').read()) 
+
+image_moins_filename = 'src/app/dash/ressources/minus.png'
+encoded_image_moins = base64.b64encode(open(image_moins_filename, 'rb').read()) 
+
 
 button_filename = 'src/app/dash/ressources/AVA_button.png'
 encoded_image_button = base64.b64encode(open(button_filename, 'rb').read())
@@ -52,7 +59,7 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
             html.Div([
 
                 html.Img(
-                    src='data:image/png;base64,{}'.format(encoded_image.decode()),
+                    src='data:image/png;base64,{}'.format(encoded_image_ava.decode()),
                     height = "60px"
                 ),
             ]), 
@@ -146,8 +153,8 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                         ),
                 ]),
  
-                dbc.CardBody(children = [
-                    html.P({},id='details_output')]
+                dbc.CardBody(
+                    html.Div(id='details_output', children=[])
                 )
                
             ],style={"height": "100%"}, className='card border-light'),   
@@ -166,9 +173,15 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                 ]),
 
                 dbc.CardBody(
-                        html.Div({},id='temps_reel_output',className="card-body")
+                        
+                        html.Div([
 
-                )
+                            html.Img(
+                                src='data:image/png;base64,{}'.format(encoded_image_plus.decode()),
+                                height = "60px"
+                            ),
+                         ]), 
+                ),
 
             ],style={"height": "100%"}, className='card border-light'),   
         ],className="mb-3"),
@@ -292,10 +305,17 @@ def update_output_details(value_slctd):
 
 def update_output_temps_reel(value_slctd):
     price_tps = price(value_slctd)
-    print (price_tps)
-    return price_tps
-    
+    return "Price : {}".format(price_tps[0])
 
+#temps_reel_couleur   
+@app.callback(
+    Output("temps_reel_couleur","children"),
+    Input("dropdown_temps_reel","value")
+)
+
+def update_output_temps_couleurs(value_slctd):
+    price_tps = price(value_slctd)
+    return "Price : {}".format(price_tps[0])
 # ------- RUN APP --------------------------------------------------------
 if __name__=='__main__':
     app.run_server(debug=True)  
