@@ -1,10 +1,9 @@
 # -----IMPORT -----------------------------------------------------
 from tracemalloc import stop
 import dash
-# import dash_core_components as dcc
+
 from dash import dcc
 from dash import html
-# import dash_html_components as html
 from dash.dependencies import Output, Input
 import dash_bootstrap_components as dbc
 import plotly.express as px
@@ -12,6 +11,7 @@ import pandas as pd
 import base64
 import plotly.graph_objs as go
 from dash import Dash, dash_table
+import dash_auth
 
 
 from src.app.feature_wallet.wallet import wallet
@@ -23,6 +23,9 @@ from src.app.feature_transaction.transaction import transaction
 # wallet["Name"].fillna("Unknown", inplace=True)
 #print (wallet("0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1))
 
+VALID_USERNAME_PASSWORD_PAIRS = {
+    'hello': 'world'
+}
 
 default_transaction=transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1).head(10)
 # print(default_transaction)
@@ -55,6 +58,14 @@ app=dash.Dash(__name__, external_stylesheets=[dbc.themes.QUARTZ],  #dbc.themes.Z
                      'content': 'width=device-width, initial-scale=1.0'}]
                      
             )
+
+auth = dash_auth.BasicAuth(
+    app,
+    VALID_USERNAME_PASSWORD_PAIRS
+)
+
+
+server=app.server
 
 # ------- LAYOUT --------------------------------------------------------
 
@@ -201,19 +212,30 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                 dbc.CardBody([
                     html.Div([
                         dash_table.DataTable(
-                            data=default_transaction.to_dict('records'),
-                            columns=[{'id': c, 'name': c} for c in default_transaction.columns],
-                            style_as_list_view=True,
-                            style_cell={'padding': '5px'},
+                            data=default_transactionn.to_dict('records'),
+                            columns=[{'id': c, 'name': c} for c in default_transactionn.columns],
+                            page_action='none',
+                            style_table={'overflowY': 'auto','height': 400},
+                            style_cell={
+                                'height': 'auto',
+                                 #all three widths are needed
+                                'minWidth': '180px', 'width': '180px', 'maxWidth': '180px',
+                                'whiteSpace': 'normal'
+                            },
                             style_header={
                                 'backgroundColor': 'rgb(30, 30, 30)',
-                                'color': 'white',
+                                'border': '1px solid pink' ,
                                 'fontWeight': 'bold'
                             },
                             style_data={
+                                'width': '150px', 'minWidth': '150px', 'maxWidth': '150px',
+                                'border': '1px solid blue' ,
+                                #'textOverflow': 'ellipsis',
                                 'backgroundColor': 'rgb(50, 50, 50)',
                                 'color': 'white'
-                            },     
+                            },
+                            
+                            fixed_rows={'headers': True},
                         ),
                     ]),
                 ]), 
@@ -277,6 +299,7 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
 #     dff = wallet[wallet['Name']==stock_slctd]
 #     figln = px.bar(dff, x='Name', y='Balance')
 #     return figln
+
 
 
 # Balance - Donut
