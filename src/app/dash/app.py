@@ -11,6 +11,7 @@ import base64
 import plotly.graph_objs as go
 from dash import Dash, dash_table
 import dash_auth
+import dash_core_components as dcc
 
 
 from src.app.feature_wallet.wallet import wallet
@@ -66,6 +67,8 @@ app=dash.Dash(__name__, external_stylesheets=[dbc.themes.QUARTZ],  #dbc.themes.Z
                      
             )
 
+# -------- CONNECTION ------------------------------------------------------
+
 auth = dash_auth.BasicAuth(
     app,
     VALID_USERNAME_PASSWORD_PAIRS
@@ -76,7 +79,10 @@ server=app.server
 
 # ------- LAYOUT --------------------------------------------------------
 
-app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
+app.layout= dbc.Container([   #dbc.Container mieux que html.div pour bootstrap
+                           
+    dcc.Location(id='url', refresh=False),
+    html.Div(id='page-content'),
 
     dbc.Row([   #divise la page en 3 ligne : le titres / dropdown / derniers bar chart
         dbc.Col([  #divise les lignes en colonnes ici que le titre
@@ -107,7 +113,8 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
             html.Button([
                 html.Img(
                     src='data:image/png;base64,{}'.format(encoded_image_button.decode()),
-                    height = "50px"
+                    height = "50px",
+                    
                 ),
             ], className='btn btn-secondary')
         ],width=1), 
@@ -287,6 +294,23 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
         ],width=7),
     ]),  
 ],fluid = True)
+
+
+index_page = html.Div([
+    dcc.Link('Go to Page 1', href='/page-1'),
+])
+
+page_1_layout = html.Div([
+    html.H1('Page 1'),
+    dcc.Dropdown(
+        id='page-1-dropdown',
+        options=[{'label': i, 'value': i} for i in ['LA', 'NYC', 'MTL']],
+        value='LA'
+    ),
+    html.Div(id='page-1-content'),
+    html.Br(),
+    dcc.Link('Go back to home', href='/'),
+])
  #permet d'étirer à la largeur de la page web
 
 
@@ -366,7 +390,27 @@ def update_output_temps_reel(value_slctd):
 def update_output_temps_couleurs(value_slctd):
     price_tps = price(value_slctd)
     return "Price : {}".format(price_tps[0])
+
+
+
+
+@app.callback(Output('page-1-content', 'children'),
+              [Input('page-1-dropdown', 'value')])
+def page_1_dropdown(value):
+    return 'You have selected "{}"'.format(value)
+
+
+@app.callback(Output('page-content', 'children'),
+              [Input('url', 'pathname')])
+
+def display_page(pathname):
+    if pathname == '/page-1':
+        return page_1_layout
+    else:
+        return index_page
+    
 # ------- RUN APP --------------------------------------------------------
 def launch_app():
-    return app.run_server(debug=True)  
+    return app.run_server(debug=False)  
+
 
