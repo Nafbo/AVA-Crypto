@@ -212,8 +212,8 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                 dbc.CardBody([
                     html.Div([
                         dash_table.DataTable(
-                            data=default_transactionn.to_dict('records'),
-                            columns=[{'id': c, 'name': c} for c in default_transactionn.columns],
+                            data=default_transaction.to_dict('records'),
+                            columns=[{'id': c, 'name': c} for c in default_transaction.columns],
                             page_action='none',
                             style_table={'overflowY': 'auto','height': 400},
                             style_cell={
