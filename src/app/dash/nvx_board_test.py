@@ -1,10 +1,8 @@
 # -----IMPORT -----------------------------------------------------
 from tracemalloc import stop
 import dash
-# import dash_core_components as dcc
 from dash import dcc
 from dash import html
-# import dash_html_components as html
 from dash.dependencies import Output, Input
 import dash_bootstrap_components as dbc
 import plotly.express as px
@@ -27,7 +25,7 @@ from src.app.feature_transaction.transaction import transaction
 default_transaction=transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1).head(10)
 # print(default_transaction)
 # "0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1
-adress_curent = "0xCBD6832Ebc203e49E2B771897067fce3c58575ac"
+adress_curent = "0x102e0206113e2b662ea784eb5db4e8de1d18c8ae"
 blockchain = 1
 wallet,total=wallet(adress_curent, blockchain)
 default_name=wallet['Name'].head(1)
@@ -56,6 +54,12 @@ app=dash.Dash(__name__, external_stylesheets=[dbc.themes.QUARTZ],  #dbc.themes.Z
                      
             )
 
+# navbar = dbc.Nav([
+#     dbc.NavLink("Global View", href="/" ,active="exact"),
+#     dbc.NavLink("Transactions", href="/transactions", active ="exact")
+# ]),
+
+# content = html.Div(id="page-content", className="card border-secondary mb-3"),
 # ------- LAYOUT --------------------------------------------------------
 
 app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
@@ -76,10 +80,9 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
         dbc.Col([
             dbc.Row([
                 dbc.Col([
-                    html.H4(adress_curent,
-                    className='modal-title ')
+                    html.H4(adress_curent, className='modal-title ')
                 ],className="py-1 "),  
-              ], ), #parametre du text w/ bootstrap   df. bootstrap cheatsheet  
+            ]), #parametre du text w/ bootstrap   df. bootstrap cheatsheet  
         ], className="card border-success ", width={'size':9, 'offset':1}),
         
         dbc.Col([
@@ -90,7 +93,6 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                 ),
             ], className='btn btn-secondary')
         ],width=1), 
-
     ], className="m-2"),  
 
  #-------------- BODY --------------#
@@ -98,7 +100,6 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
     #-------------- TOP --------------#
     dbc.Row([
         dbc.Col([
-
             dbc.Row([
                 dbc.Card([
                     html.H3("Overall"),
@@ -106,45 +107,6 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                 ], className='card border-light mb-3 py-5 text-md-center'),
             ],style={"height": "50%"}),
         ], width=2),
-
-        dbc.Col([
-            dbc.Card([
-                dbc.CardHeader([
-                    dcc.Dropdown(id='dropdown_donut', 
-                        multi=True, #peut choisir plusieurs valeurs
-                        value=default_name,
-                        options=[{'label':x, 'value':x}
-                                    for x in sorted(wallet['Name'].unique())],
-                    )
-                ]),
-
-                dbc.CardBody([
-                    dcc.Graph(id='donut', figure={})
-                ]),
-
-            ], className='card border-light mb-3'),   
-        ]),
-              
-        dbc.Col([
-            dbc.Card([
-                dbc.CardHeader([
-                    "Wallet History" ]),
-
-                dbc.CardBody([
-                    dcc.Graph(figure=history)
-                    
-                ]),
-            ], className='card border-light mb-3')
-        ],style={"height": "100%"})
-    ]),#justify : gère les espaces : start, center, end, between, around // pour que ça marche avoir des colonnes en "stock" ; justify='around'
-
-    #-------------- BOTTOM --------------#   
-    dbc.Row([
-        dbc.Col([
-            dbc.Card([
-                    html.P("Adress Current Wallet : {}".format(adress_curent))
-                ], className='card border-light mb-3 py-5 text-sm-center')
-        ],width=2),
 
         dbc.Col([
             dbc.Card([
@@ -171,7 +133,7 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                 dbc.CardHeader([
                     html.H4("Token Price"),
 
-                    dcc.Dropdown(id='dropdown_temps_reel',
+                    dcc.Dropdown(id='dropdown_temps_reel', 
                         multi=False, #peut choisir qu'une seule valeur
                         value=default_name, #valeur par defaut 
                         options=["bitcoin","ethereum","cardano"] #choisis les valeurs selon la colonne Name : .unique() prends que les valeurs 1 fois sans duplicats
@@ -180,7 +142,7 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
 
                 dbc.CardBody(
                         
-                        html.Div([
+                        html.Div([ 
 
                             html.Img(
                                 src='data:image/png;base64,{}'.format(encoded_image_plus.decode()),
@@ -191,72 +153,76 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
 
             ],style={"height": "100%"}, className='card border-light'),   
         ],className="mb-3"),
+    ]),
 
-        dbc.Col([
-            dbc.Card([
-                dbc.CardHeader([
-                    html.H4("Transactions"),
-                ]),
-
-                dbc.CardBody([
-                    html.Div([
-                        dash_table.DataTable(
-                            data=default_transaction.to_dict('records'),
-                            columns=[{'id': c, 'name': c} for c in default_transaction.columns],
-                            style_as_list_view=True,
-                            style_cell={'padding': '5px'},
-                            style_header={
-                                'backgroundColor': 'rgb(30, 30, 30)',
-                                'color': 'white',
-                                'fontWeight': 'bold'
-                            },
-                            style_data={
-                                'backgroundColor': 'rgb(50, 50, 50)',
-                                'color': 'white'
-                            },     
-                        ),
-                    ]),
-                ]), 
-            ]),  
-        ]), 
-    ]),      
-
+    #-------------- BOTTOM --------------#   
     dbc.Row([
         dbc.Col([
-            dbc.Row([
-                html.Button([
+            dbc.Card([
+                    html.P("Adress Current Wallet : {}".format(adress_curent))
+                ], className='card border-light mb-3 py-5 text-sm-center'),
+
+            html.Button([
                     html.H4("wallet 2")
                 ], className='btn btn-secondary mb-3'),
-            ], style={"height": "50%"}),
 
-            dbc.Row([
-                html.Button(
+            html.Button(
                     html.H4("Add another wallet + "), id="add_wallet", n_clicks = 0, className='btn btn-secondary')
-            ], style={"height": "50%"}),
-        ], width = 2),
+ 
+        ],style={"height": "100%"},width=2),
 
         dbc.Col([
             dbc.Card([
                 dbc.CardHeader([
-                    html.H4("Selectionner vos cryptomonnaies"), 
-
-                    dcc.Checklist(id='checklist_bar',
-                        value=default_name,
-                        options=[{'label':x, 'value':x}
-                            for x in sorted(wallet['Name'].unique())],
-                        labelClassName='text-secondary mx-1'  #espace entre les options
-                    ),
+                    dcc.Location(id="url"),
+                    dbc.Nav([
+                        dbc.NavLink("Global View", href="/" ,active="exact"),
+                        dbc.NavLink("Transactions", href="/transactions", active ="exact")
+                    ], className="nav-item"),
                 ]),
 
-                dbc.CardBody([
-                    dcc.Graph(id='bar_chart', figure={}, style={"height": "95%"}),
-                ]),
-            ], className='card border-light'),
-        ],width=7),
-    ]),  
+                dbc.CardBody(id="page-content")
+
+            ])
+        ]),
+    ]),
 
  #-------------- FOOTER --------------#    
-],fluid = True) #permet d'étirer à la largeur de la page web
+],fluid = True) #permet d'étirer à la largeur de la page web    
+
+
+
+    #     dbc.Col([
+    #         dbc.Card([
+    #             dbc.CardHeader([
+    #                 html.H4("Transactions"),
+    #             ]),
+
+    #             # dbc.CardBody([
+    #             #     html.Div([
+    #             #         dash_table.DataTable(
+    #             #             data=default_transaction.to_dict('records'),
+    #             #             columns=[{'id': c, 'name': c} for c in default_transaction.columns],
+    #             #             style_as_list_view=True,
+    #             #             style_cell={'padding': '5px'},
+    #             #             style_header={
+    #             #                 'backgroundColor': 'rgb(30, 30, 30)',
+    #             #                 'color': 'white',
+    #             #                 'fontWeight': 'bold'
+    #             #             },
+    #             #             style_data={
+    #             #                 'backgroundColor': 'rgb(50, 50, 50)',
+    #             #                 'color': 'white'
+    #             #             },     
+    #             #         ),
+    #             #     ]),
+    #             # ]), 
+    #         ]),  
+    #     ]), 
+    # ]),      
+
+    
+
 
 
 
@@ -278,29 +244,111 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
 #     figln = px.bar(dff, x='Name', y='Balance')
 #     return figln
 
+@app.callback(
+    Output("page-content", "children"),
+    [Input("url","pathname")]
+)
+
+def render_page_content(pathname):
+    if pathname=="/" :
+        return [
+
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardHeader([ 
+                            dcc.Dropdown(id='dropdown_donut', 
+                                multi=True, #peut choisir plusieurs valeurs
+                                value=default_name,
+                                options=[{'label':x, 'value':x}
+                                            for x in sorted(wallet['Name'].unique())],
+                            ),
+                        ]),
+
+                        dbc.CardBody([
+                            dcc.Graph(id='donut', figure={})
+                        ]),
+
+                    ]),
+                ],width=6),
+
+                dbc.Col([
+                    dbc.Card([
+                            dbc.CardHeader([
+                                "Wallet History"
+                            ]),
+
+                            dbc.CardBody([
+                                dcc.Graph(figure=px.line(wallet_history, x='Date', y='Holdings (en USD)'))      
+                            ]),
+                    ], className="card border-light mb-3")
+                ],width=6),
+            ]),
+
+            dbc.Row([
+                dbc.Col([
+                   dbc.Card([
+                        dbc.CardHeader([
+                            html.H4("Selectionner vos cryptomonnaies"), 
+
+                            dcc.Checklist(id='checklist_bar',
+                                value=default_name,
+                                options=[{'label':x, 'value':x}
+                                    for x in sorted(wallet['Name'].unique())],
+                                labelClassName='text-secondary mx-1'  #espace entre les options
+                            ),
+                        ]),
+
+                        dbc.CardBody([
+                            dcc.Graph(id='bar_chart', figure={}, style={"height": "95%"}),
+                        ]),
+                    ], className='card border-light'),
+                ]),
+            ]),
+
+
+        ]      
+
+    elif pathname=='/transactions':
+
+        return [
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardHeader([
+                            html.H4("Transactions"),
+                        ]),
+                    ],className='card border-light mb-3'),
+                ])
+
+            ])
+            # 
+        ]
+        
+
 
 # Balance - Donut
-@app.callback(
-    Output('donut', 'figure'),
-    Input('dropdown_donut', 'value')
-)
-def update_graph(value_slctd):
-    wallet_slctd = wallet[wallet['Name'].isin(value_slctd)]
-    figln2 = px.pie(wallet_slctd, names='Name', values='Balance', color='Name', hover_name='Name', hole=.4)
-    return figln2
+# @app.callback(
+#     Output('donut', 'figure'),
+#     Input('dropdown_donut', 'value')
+# )
+# def update_graph(value_slctd):
+#     wallet_slctd = wallet[wallet['Name'].isin(value_slctd)]
+#     figln2 = px.pie(wallet_slctd, names='Name', values='Balance', color='Name', hover_name='Name', hole=.4)
+#     return figln2
 
 
-# Barchart - Balance - Crypto
-@app.callback(
-    Output('bar_chart', 'figure'),
-    Input('checklist_bar', 'value')
-)
-def update_graph(value_slctd):
-    wallet_slctd = wallet[wallet['Name'].isin(value_slctd)]
-    fighist = px.histogram(wallet_slctd, x='Name', y='Balance', color="Name",  hover_name='Name')
-    return fighist
+# # Barchart - Balance - Crypto
+# @app.callback(
+#     Output('bar_chart', 'figure'),
+#     Input('checklist_bar', 'value')
+# )
+# def update_graph(value_slctd):
+#     wallet_slctd = wallet[wallet['Name'].isin(value_slctd)]
+#     fighist = px.histogram(wallet_slctd, x='Name', y='Balance', color="Name",  hover_name='Name')
+#     return fighist
 
-#Add wallet
+# #Add wallet
 
 
 
