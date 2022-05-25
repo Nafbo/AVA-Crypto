@@ -1,10 +1,11 @@
 # -----IMPORT -----------------------------------------------------
 from ctypes import alignment
 from tracemalloc import stop
+from turtle import width
 import dash
 from dash import dcc
 from dash import html
-from dash.dependencies import Output, Input
+from dash.dependencies import Output, Input, State
 import dash_bootstrap_components as dbc
 from matplotlib import image
 import plotly.express as px
@@ -75,6 +76,9 @@ app=dash.Dash(__name__, external_stylesheets=[dbc.themes.QUARTZ],  #dbc.themes.Z
 app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
 
  #-------------- HEADER --------------#
+    dcc.Store(id="store_current_address"),
+    dcc.Store(id="store_current_blockchain"),
+    dcc.Store(id="store_wallet_all"),
 
     dbc.Row([   #divise la page en 3 ligne : le titres / dropdown / derniers bar chart
         dbc.Col([  #divise les lignes en colonnes ici que le titre
@@ -157,16 +161,63 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
     #-------------- BOTTOM --------------#   
     dbc.Row([
         dbc.Col([
+            dbc.Row([
             dbc.Card([
-                    html.P("Adress Current Wallet : {}".format(adress_curent))
+                    html.Div(id="current_address")
                 ], className='card border-light mb-3 py-5 text-sm-center'),
+            ]),
+            dbc.Row(id="add_wallet"),
+            dbc.Row([
+            html.Button("Add a wallet + ", id="open", className="btn btn-secondary"),
 
-            html.Button([
-                    html.H4("wallet 2")
-                ], className='btn btn-secondary mb-3'),
+            dbc.Modal([
+                dbc.ModalHeader("Add another wallet"),
+                dbc.ModalBody(
+                    dbc.Form(
+                        [
+                            dbc.CardGroup(
+                                [
+                                    html.H5("Network", className="mr-2 mb-3"),
+                                    dcc.Dropdown(id='dropdown_blockchain', 
+                                        multi=False, #peut choisir plusieurs valeurs
+                                        value="ethereum - 1",
+                                        options=["Ethereum - 1"," Binance Smart Chain - 56", "Matic Testnet Mumbai - 8001", "RSK Testnet - 31", "Moonbeam Moonbase Alpha - 1287", "Fantom Opera - 250"],
+                                        placeholder="Select the blockchain",
+                                        style={"width": "550px", "color" :"black"},
+                                        className="mt-3 mb-3 "
+                                    ),
+                                
+                                ],
+                                className="mr-3 mb-3"
+                            ),
+                            dbc.CardGroup(
+                                [
+                                    html.H5("Address", className="mr-2 mb-1"),
+                                    dbc.Input(type="text", placeholder="Enter your address", id="text_address"),
+                                ],
+                                className="mr-3 mb-3",
+                            ),
 
-            html.Button(
-                    html.H4("Add another wallet + "), id="add_wallet", n_clicks = 0, className='btn btn-secondary')
+                            dbc.Button("Enter", className=" btn btn-primary text-center", id="enter", n_clicks=0),
+                        ],
+                        # inline=True,
+                    )
+                ),
+                dbc.ModalFooter(
+                    dbc.Button("Close", id="close", className="btn btn-secondary ml-auto")
+                ),
+
+            ],
+                id="modal",
+                is_open=False,    # True, False
+                size="xl",        # "sm", "lg", "xl"
+                backdrop=True,    # True, False or Static for modal to not be closed by clicking on backdrop
+                scrollable=True,  # False or True if modal has a lot of text
+                # centered=True,    # True, False
+                fade=True         # True, False
+            ),
+    
+        ]),
  
         ],style={"height": "100%"},width=2),
 
@@ -192,6 +243,76 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
 
 # ------- CALLBACK -------------------------------------------------------
 
+ #-------------- Add wallet Callback --------------# 
+@app.callback(
+    Output("modal", "is_open"),
+    [Input("open", "n_clicks"), Input("close", "n_clicks")],
+    [State("modal", "is_open")],
+)
+def toggle_modal(n1, n2, is_open):
+    if n1 or n2 :
+        return not is_open
+    return is_open
+
+# Stock variable
+
+@app.callback(
+    Output("store_wallet_all", "data"),
+    [Input("dropdown_blockchain","value"), Input("text_address","value") ]
+)
+
+def update_store_wallet_all(value_drop, value_text) :
+    return value_drop, value_text
+
+@app.callback(
+    Output ("store_current_blockchain", "data"),
+    [Input("dropdown_blockchain","value")]
+)
+
+def update_adress(value) :
+        number_chain = value.rpartition('-')[2]
+        return int(number_chain)
+
+@app.callback(
+    Output ("store_current_address", "data"),
+    [Input("text_address","value")]
+)
+
+def update_adress(value) :
+        return value
+    
+# Variable ds fct
+
+@app.callback(
+    Output("current_address", "children"),
+    Input("store_current_address", "data")
+)
+
+def update_current_wallet (data):
+    return '{}'.format(data)
+
+# Ajoute Wallet
+@app.callback(
+     Output("add_wallet", "children"),
+    Input("enter", "n_clicks")
+)
+
+def upade_add_block_wallet(n) :
+    if n :
+        return [
+            html.Button([
+                        html.P(id="wallet_n")
+            ], className='btn btn-secondary mb-3'),
+        ]
+
+@app.callback(
+    Output("wallet_n", "children"),
+    Input("store_wallet_all", "data")
+)
+
+def update_add_wallet(n):
+    return "{} , {}".format(n[1],n[0])
+    
 
 # Balance : details_crypto
 @app.callback(
@@ -272,21 +393,6 @@ def update_output_temps_reel(value_slctd):
         ],className=" py-1")
  
     ]
-
-# #temps_reel_couleur   
-# @app.callback(
-#     Output("temps_reel_couleur","children"),
-#     Input("dropdown_temps_reel","value")
-# )
-
-# def update_output_temps_couleurs(value_slctd):
-#     price_tps = price(value_slctd)
-#     return "Price : {}".format(price_tps[0])
-
-
-
-
-
 
 
  #-------------- NavBar Callback --------------#    
@@ -425,49 +531,6 @@ def update_graph(value_slctd):
     fighist = px.histogram(wallet_slctd, x='Name', y='Balance', color="Name",  hover_name='Name')
     return fighist
 
-
-# # details_crypto
-# @app.callback(
-#     Output("details_output", "children"),
-#     Input('dropdown_details', 'value')
-# )
-# def update_output_details(value_slctd):
-#     dff = wallet[wallet['Name']==value_slctd]
-#     balance = "{}".format(dff['Balance']).split('\n',1)[0].split('    ',1)[1]
-#     holdings = "{}".format(dff['Holdings (en USD)']).split('\n',1)[0].split('    ',1)[1]
-#     profit = "{}".format(dff['Profit/Loss']).split('\n',1)[0].split('    ',1)[1]
-#     return "Balance : ",balance,"\n"," Holdings (en USD) : ",holdings, "\n", "Profit/Loss : " , profit
-
-
-
-
-
-
-
-
-
-
-
-
-# #temps_reel_output
-# @app.callback(
-#     Output("temps_reel_output","children"),
-#     Input("dropdown_temps_reel","value")
-# )
-
-# def update_output_temps_reel(value_slctd):
-#     price_tps = price(value_slctd)
-#     return "Price : {}".format(price_tps[0])
-
-# #temps_reel_couleur   
-# @app.callback(
-#     Output("temps_reel_couleur","children"),
-#     Input("dropdown_temps_reel","value")
-# )
-
-# def update_output_temps_couleurs(value_slctd):
-#     price_tps = price(value_slctd)
-#     return "Price : {}".format(price_tps[0])
 # ------- RUN APP --------------------------------------------------------
 # def launch_app():
 #     return app.run_server(debug=True)  
