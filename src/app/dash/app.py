@@ -1,6 +1,7 @@
 # -----IMPORT -----------------------------------------------------
 from tracemalloc import stop
 import dash
+
 from dash import dcc
 from dash import html
 from dash.dependencies import Output, Input
@@ -10,6 +11,7 @@ import pandas as pd
 import base64
 import plotly.graph_objs as go
 from dash import Dash, dash_table
+import dash_auth
 
 
 from src.app.feature_wallet.wallet import wallet
@@ -21,9 +23,12 @@ from src.app.feature_transaction.transaction import transaction
 # wallet["Name"].fillna("Unknown", inplace=True)
 #print (wallet("0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1))
 
+VALID_USERNAME_PASSWORD_PAIRS = {
+    'hello': 'world'
+}
 
 default_transaction=transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1).head(10)
-print(default_transaction)
+# print(default_transaction)
 # "0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1
 adress_curent = "0xCBD6832Ebc203e49E2B771897067fce3c58575ac"
 blockchain = 1
@@ -54,10 +59,19 @@ app=dash.Dash(__name__, external_stylesheets=[dbc.themes.QUARTZ],  #dbc.themes.Z
                      
             )
 
+auth = dash_auth.BasicAuth(
+    app,
+    VALID_USERNAME_PASSWORD_PAIRS
+)
+
+
 server=app.server
+
 # ------- LAYOUT --------------------------------------------------------
 
 app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
+
+ #-------------- HEADER --------------#
 
     dbc.Row([   #divise la page en 3 ligne : le titres / dropdown / derniers bar chart
         dbc.Col([  #divise les lignes en colonnes ici que le titre
@@ -73,16 +87,11 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
         dbc.Col([
             dbc.Row([
                 dbc.Col([
-                     html.Div(
-                        dcc.Dropdown([1,2,3])
-                         , className="dropdown-menu"),
-                ], width =2),
-                dbc.Col([
                     html.H4(adress_curent,
-                    className='modal-title')
-                ]),  
-              ]), #parametre du text w/ bootstrap   df. bootstrap cheatsheet  
-        ], className="card border-success", width={'size':9, 'offset':1}),
+                    className='modal-title ')
+                ],className="py-1 "),  
+              ], ), #parametre du text w/ bootstrap   df. bootstrap cheatsheet  
+        ], className="card border-success ", width={'size':9, 'offset':1}),
         
         dbc.Col([
             html.Button([
@@ -95,6 +104,9 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
 
     ], className="m-2"),  
 
+ #-------------- BODY --------------#
+
+    #-------------- TOP --------------#
     dbc.Row([
         dbc.Col([
 
@@ -127,8 +139,7 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
         dbc.Col([
             dbc.Card([
                 dbc.CardHeader([
-                    "Wallet History"
-                ]),
+                    "Wallet History" ]),
 
                 dbc.CardBody([
                     dcc.Graph(figure=history)
@@ -137,7 +148,8 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
             ], className='card border-light mb-3')
         ],style={"height": "100%"})
     ]),#justify : gère les espaces : start, center, end, between, around // pour que ça marche avoir des colonnes en "stock" ; justify='around'
-    
+
+    #-------------- BOTTOM --------------#   
     dbc.Row([
         dbc.Col([
             dbc.Card([
@@ -202,26 +214,32 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                         dash_table.DataTable(
                             data=default_transaction.to_dict('records'),
                             columns=[{'id': c, 'name': c} for c in default_transaction.columns],
-                            style_as_list_view=True,
-                            style_cell={'padding': '5px'},
+                            page_action='none',
+                            style_table={'overflowY': 'auto','height': 400},
+                            style_cell={
+                                'height': 'auto',
+                                 #all three widths are needed
+                                'minWidth': '180px', 'width': '180px', 'maxWidth': '180px',
+                                'whiteSpace': 'normal'
+                            },
                             style_header={
                                 'backgroundColor': 'rgb(30, 30, 30)',
-                                'color': 'white',
+                                'border': '1px solid pink' ,
                                 'fontWeight': 'bold'
                             },
                             style_data={
+                                'width': '150px', 'minWidth': '150px', 'maxWidth': '150px',
+                                'border': '1px solid blue' ,
+                                #'textOverflow': 'ellipsis',
                                 'backgroundColor': 'rgb(50, 50, 50)',
                                 'color': 'white'
-                            }, 
+                            },
                             
-                            
+                            fixed_rows={'headers': True},
                         ),
-                     
                     ]),
-                   
                 ]), 
-            ]),
-            
+            ]),  
         ]), 
     ]),      
 
@@ -258,8 +276,10 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
             ], className='card border-light'),
         ],width=7),
     ]),  
-],
-fluid = True) #permet d'étirer à la largeur de la page web
+
+ #-------------- FOOTER --------------#    
+],fluid = True) #permet d'étirer à la largeur de la page web
+
 
 
 # width={'size':5, 'offset':0, 'order':2}, #offset decale de 2 colonnes à gauche
@@ -279,6 +299,7 @@ fluid = True) #permet d'étirer à la largeur de la page web
 #     dff = wallet[wallet['Name']==stock_slctd]
 #     figln = px.bar(dff, x='Name', y='Balance')
 #     return figln
+
 
 
 # Balance - Donut
@@ -338,6 +359,9 @@ def update_output_temps_couleurs(value_slctd):
     price_tps = price(value_slctd)
     return "Price : {}".format(price_tps[0])
 # ------- RUN APP --------------------------------------------------------
-def launch_app():
-    return app.run_server(debug=True)  
+# def launch_app():
+#     return app.run_server(debug=True)  
+
+if __name__=='__main__':
+    app.run_server(debug=True)   
 
