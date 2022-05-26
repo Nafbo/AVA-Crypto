@@ -22,15 +22,15 @@ from src.test_app.test_feature_transaction.test_transaction import test_transact
 #print (wallet("0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1))
 
 
-default_transaction=transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1).head(10)
+default_transaction=test_transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1).head(10)
 print(default_transaction)
 # "0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1
 adress_curent = "0xCBD6832Ebc203e49E2B771897067fce3c58575ac"
 blockchain = 1
-wallet,total=wallet(adress_curent, blockchain)
+wallet,total=test_wallet(adress_curent, blockchain)
 default_name=wallet['Name'].head(1)
 
-wallet_history = wallet_history(adress_curent, blockchain)
+wallet_history = test_wallet_history(adress_curent, blockchain)
 history = px.line(wallet_history, x='Date', y='Holdings (en USD)')
 
 image_ava_filename = 'src/app/dash/ressources/AVA_logo.png'
@@ -325,7 +325,7 @@ def update_output_details(value_slctd):
 )
 
 def update_output_temps_reel(value_slctd):
-    price_tps = price(value_slctd)
+    price_tps = test_price(value_slctd)
     return "Price : {}".format(price_tps[0])
 
 #temps_reel_couleur   
@@ -335,7 +335,7 @@ def update_output_temps_reel(value_slctd):
 )
 
 def update_output_temps_couleurs(value_slctd):
-    price_tps = price(value_slctd)
+    price_tps = test_price(value_slctd)
     return "Price : {}".format(price_tps[0])
 # ------- RUN APP --------------------------------------------------------
 def launch_app():
