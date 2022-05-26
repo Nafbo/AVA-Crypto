@@ -4,6 +4,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def wallet_history(address,chain_id):
+    '''Formatting the information retrieved for a wallet
+    
+    Parameters:
+    address (string): wallet address
+    chain_id (int): chain id of the wallet
+    
+    Returns:
+    cf (Dataframe): dataframe usable with the Holdings (en USD) and the date of this balance of the wallet
+    '''
     df= link_address_history(address,chain_id)
     history = {}
     history_response = []
@@ -19,12 +28,10 @@ def wallet_history(address,chain_id):
         history_response.append(history)
         history = {}
         
-    cf = pd.DataFrame(history_response)
-                      
+    cf = pd.DataFrame(history_response)                
     return(cf)
     
 if __name__ == '__main__':
-    cf = wallet_history("0xb71f6064b01c7e2e14f3bb93db665400ac7acb37", 1)
-    print(cf)  
+    cf = print(wallet_history("0xb71f6064b01c7e2e14f3bb93db665400ac7acb37", 1))  
     cf.plot(x ='Date', y='Holdings (en USD)', kind = 'line')
     plt.show()  

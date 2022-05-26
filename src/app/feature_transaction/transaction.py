@@ -6,6 +6,15 @@ import dateutil.parser
 
 
 def transaction(address,chain_id):
+    '''Formatting the information retrieved for a wallet
+    
+    Parameters:
+    address (string): wallet address
+    chain_id (int): chain id of the wallet
+    
+    Returns:
+    cf (Dataframe): dataframe usable with the Type of transaction, the Balance, the Holdings (en USD), the From of the transaction, the To of the transaction and the Succesful of the transaction for a wallet
+    '''
     df= link_address_transaction(address,chain_id)
     transaction = {}
     transaction_response = []

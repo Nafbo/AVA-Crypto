@@ -2,6 +2,16 @@ from src.app.feature_wallet.link_address_balance import link_address_balance
 import pandas as pd
 
 def wallet(address,chain_id):
+    '''Formatting the information retrieved for a wallet
+    
+    Parameters:
+    address (string): wallet address
+    chain_id (int): chain id of the wallet
+    
+    Returns:
+    cf (Dataframe): dataframe usable with the Name, the Balance, the Holdings (en USD) and the Profit/Loss in 24h for each cryptocurrency of the wallet
+    total(float): total of the wallet in USD
+    '''
     df= link_address_balance(address, chain_id)
     crypto = {}
     crypto_response = []
@@ -28,10 +38,3 @@ def wallet(address,chain_id):
 
 if __name__ == '__main__':
     print(wallet("0xd5Ac26b0FE1D3Ae9A7679cD92598fF02d79A9E26", 1))
-
-'''
-Fonction qui prend une adresse et le numero de la blockchain en argument.
-Et qui retourn une DataFrame avec le nom de la crypto "Name", le nombre de currency de cette crypto "balance", la balance 
-de la crypto en USD "Holdings", la perte/gain en 24h de cette crypto en USD "Profit/loss" et retoure aussi
-le total de ce portefeuilleen USD "total"
-'''
