@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import pytest
 
+@pytest.fixture
 def test_all_address_wallet(addresses):
     '''Formatting the information retrieved for wallets
     
