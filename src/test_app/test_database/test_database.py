@@ -31,7 +31,7 @@ class Portofolio(db.Model):
         self.user_id = user_id
   
     
-def create_user(email,password):
+def test_create_user(email,password):
     '''Create an user in the database
     
     Parameters:
@@ -48,7 +48,7 @@ def create_user(email,password):
     return()
     
 
-def add_wallet(email, wallet, chain_id):
+def test_add_wallet(email, wallet, chain_id):
     '''Add a wallet at an user in the database
     
     Parameters:
@@ -67,7 +67,7 @@ def add_wallet(email, wallet, chain_id):
     db.session.commit()
     return()
 
-def portefolio_by_user(email, password):
+def test_portefolio_by_user(email, password):
     '''displays the portfolios of an user
     
     Parameters:
@@ -97,6 +97,6 @@ def portefolio_by_user(email, password):
 if __name__ == "__main__":
     # db.drop_all()
     # db.create_all()
-    # create_user("victor.bonnaf@gmail.com", "victor")  
-    # add_wallet("victor.bonnaf@gmail.com", "ZREWTXRYCVYIHUJOIP", 4567)
-    print(portefolio_by_user("victor.bonnaf@gmail.com", "victor"))
+    # test_create_user("victor.bonnaf@gmail.com", "victor")  
+    # test_add_wallet("victor.bonnaf@gmail.com", "ZREWTXRYCVYIHUJOIP", 4567)
+    print(test_portefolio_by_user("victor.bonnaf@gmail.com", "victor"))

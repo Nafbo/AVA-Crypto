@@ -1,7 +1,7 @@
 import requests as rq
 import pandas as pd
 
-def link_address_history(address, chain_id):
+def test_link_address_history(address, chain_id):
     '''Retrieving and formatting information from the api
     
     Parameters:
@@ -21,4 +21,4 @@ def link_address_history(address, chain_id):
 
 
 if __name__ == '__main__':
-    print(link_address_history("0xb71f6064b01c7e2e14f3bb93db665400ac7acb37", 1))
+    print(test_link_address_history("0xb71f6064b01c7e2e14f3bb93db665400ac7acb37", 1))

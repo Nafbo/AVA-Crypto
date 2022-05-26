@@ -1,11 +1,11 @@
-from src.app.feature_transaction.link_address_transaction import link_address_transaction 
+from src.test_app.test_feature_transaction.test_link_address_transaction import test_link_address_transaction 
 import pandas as pd
 from time import *
 import dateutil.parser
 
 
 
-def transaction(address,chain_id):
+def test_transaction(address,chain_id):
     '''Formatting the information retrieved for a wallet
     
     Parameters:
@@ -15,7 +15,7 @@ def transaction(address,chain_id):
     Returns:
     cf (Dataframe): dataframe usable with the Type of transaction, the Balance, the Holdings (en USD), the From of the transaction, the To of the transaction and the Succesful of the transaction for a wallet
     '''
-    df= link_address_transaction(address,chain_id)
+    df= test_link_address_transaction(address,chain_id)
     transaction = {}
     transaction_response = []
     
@@ -92,7 +92,7 @@ def transaction(address,chain_id):
 
 
 if __name__ == '__main__':
-    print(transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1))
+    print(test_transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1))
 
 
 '''

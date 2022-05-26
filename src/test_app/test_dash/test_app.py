@@ -12,10 +12,10 @@ import plotly.graph_objs as go
 from dash import Dash, dash_table
 
 
-from src.app.feature_wallet.wallet import wallet
-from src.app.feature_history.wallet_history import wallet_history
-from src.app.feature_price.price import price
-from src.app.feature_transaction.transaction import transaction
+from src.test_app.test_feature_wallet.test_wallet import test_wallet
+from src.test_app.test_feature_history.test_wallet_history import test_wallet_history
+from src.test_app.test_feature_price.test_price import test_price
+from src.test_app.test_feature_transaction.test_transaction import test_transaction
 # ------- INITIALISATION DATA --------------------------------------------------------
 # wallet=pd.read_csv("src/app/dash_Alice/ressources/wallet_ex.csv")    
 # wallet["Name"].fillna("Unknown", inplace=True)

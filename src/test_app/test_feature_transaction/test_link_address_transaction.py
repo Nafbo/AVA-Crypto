@@ -4,7 +4,7 @@ import pandas as pd
 import warnings
 warnings.filterwarnings("ignore")
 
-def link_address_transaction(address, chain_id):
+def test_link_address_transaction(address, chain_id):
     '''Retrieving and formatting information from the api
     
     Parameters:
@@ -45,4 +45,4 @@ def link_address_transaction(address, chain_id):
 
 
 if __name__ == '__main__':
-    print(link_address_transaction("0x9f5c44f84901018275b7f02f0feF1b6183A1B5A1", 56))
+    print(test_link_address_transaction("0x9f5c44f84901018275b7f02f0feF1b6183A1B5A1", 56))
