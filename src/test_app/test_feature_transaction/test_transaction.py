@@ -2,9 +2,8 @@ from src.test_app.test_feature_transaction.test_link_address_transaction import 
 import pandas as pd
 from time import *
 import dateutil.parser
-import pytest
 
-@pytest.fixture
+
 def test_transaction(address,chain_id):
     '''Formatting the information retrieved for a wallet
     

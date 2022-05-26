@@ -1,9 +1,7 @@
 from pycoingecko import CoinGeckoAPI
 cg = CoinGeckoAPI()
 import pandas as pd
-import pytest
 
-@pytest.fixture
 def test_price(crypto):
     '''The current price of a cryptocurrency
     
