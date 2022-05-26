@@ -2,6 +2,7 @@ import re
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, request, jsonify, Response
 import numpy as np
+import pytest
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://yeplwxjlhbauvi:48668289ae0c54004d2e532014cdcf6a2e9d34b4b63b74f0c35801b6b6bdc7dd@ec2-54-228-125-183.eu-west-1.compute.amazonaws.com:5432/d5e834h92a2de1"
@@ -30,7 +31,7 @@ class Portofolio(db.Model):
         self.chain_id = chain_id
         self.user_id = user_id
   
-    
+@pytest.fixture    
 def test_create_user(email,password):
     '''Create an user in the database
     
@@ -47,7 +48,7 @@ def test_create_user(email,password):
     db.session.commit()
     return()
     
-
+@pytest.fixture
 def test_add_wallet(email, wallet, chain_id):
     '''Add a wallet at an user in the database
     
@@ -67,6 +68,7 @@ def test_add_wallet(email, wallet, chain_id):
     db.session.commit()
     return()
 
+@pytest.fixture
 def test_portefolio_by_user(email, password):
     '''displays the portfolios of an user
     
