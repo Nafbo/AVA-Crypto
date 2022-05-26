@@ -37,6 +37,7 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest
+        PYTHONPATH=. py.test
         pytest
     - name: Deploy to Heroku
       env:
