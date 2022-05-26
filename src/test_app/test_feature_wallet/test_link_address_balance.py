@@ -2,7 +2,6 @@ import requests as rq
 import pandas as pd
 import pytest
 
-@pytest.fixture
 def test_link_address_balance(address, chain_id):
     '''Retrieving and formatting information from the api
     

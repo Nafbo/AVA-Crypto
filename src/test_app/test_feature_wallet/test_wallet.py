@@ -1,7 +1,7 @@
 from src.test_app.test_feature_wallet.test_link_address_balance import test_link_address_balance
 import pandas as pd
 import pytest 
-@pytest.fixture
+
 def test_wallet(address,chain_id):
     '''Formatting the information retrieved for a wallet
     
