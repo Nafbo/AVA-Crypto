@@ -2,9 +2,7 @@ from src.test_app.test_feature_history.test_link_address_history import test_lin
 import dateutil.parser
 import pandas as pd
 import matplotlib.pyplot as plt
-import pytest
 
-@pytest.fixture
 def test_wallet_history(address,chain_id):
     '''Formatting the information retrieved for a wallet
     
