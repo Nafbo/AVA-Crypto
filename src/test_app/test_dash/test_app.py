@@ -13,25 +13,25 @@ from dash import Dash, dash_table
 
 
 from src.test_app.test_feature_wallet.test_wallet import test_wallet
-from src.test_app.test_feature_history.test_wallet_history import test_wallet_history
-from src.test_app.test_feature_price.test_price import test_price
-from src.test_app.test_feature_transaction.test_transaction import test_transaction
+# from src.test_app.test_feature_history.test_wallet_history import test_wallet_history
+# from src.test_app.test_feature_price.test_price import test_price
+# from src.test_app.test_feature_transaction.test_transaction import test_transaction
 # ------- INITIALISATION DATA --------------------------------------------------------
 # wallet=pd.read_csv("src/app/dash_Alice/ressources/wallet_ex.csv")    
 # wallet["Name"].fillna("Unknown", inplace=True)
 #print (wallet("0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1))
 
 
-default_transaction=test_transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1).head(10)
-print(default_transaction)
+# default_transaction=test_transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1).head(10)
+# print(default_transaction)
 # "0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1
 adress_curent = "0xCBD6832Ebc203e49E2B771897067fce3c58575ac"
 blockchain = 1
 wallet,total=test_wallet(adress_curent, blockchain)
 default_name=wallet['Name'].head(1)
 
-wallet_history = test_wallet_history(adress_curent, blockchain)
-history = px.line(wallet_history, x='Date', y='Holdings (en USD)')
+# wallet_history = test_wallet_history(adress_curent, blockchain)
+# history = px.line(wallet_history, x='Date', y='Holdings (en USD)')
 
 image_ava_filename = 'src/app/dash/ressources/AVA_logo.png'
 encoded_image_ava = base64.b64encode(open(image_ava_filename, 'rb').read()) 
@@ -131,7 +131,7 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                 ]),
 
                 dbc.CardBody([
-                    dcc.Graph(figure=history)
+                    # dcc.Graph(figure=history)
                     
                 ]),
             ], className='card border-light mb-3')
@@ -200,8 +200,8 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                 dbc.CardBody([
                     html.Div([
                         dash_table.DataTable(
-                            data=default_transaction.to_dict('records'),
-                            columns=[{'id': c, 'name': c} for c in default_transaction.columns],
+                            # data=default_transaction.to_dict('records'),
+                            # columns=[{'id': c, 'name': c} for c in default_transaction.columns],
                             style_as_list_view=True,
                             style_cell={'padding': '5px'},
                             style_header={
@@ -324,19 +324,19 @@ def update_output_details(value_slctd):
     Input("dropdown_temps_reel","value")
 )
 
-def update_output_temps_reel(value_slctd):
-    price_tps = test_price(value_slctd)
-    return "Price : {}".format(price_tps[0])
+# def update_output_temps_reel(value_slctd):
+    # price_tps = test_price(value_slctd)
+    # return "Price : {}".format(price_tps[0])
 
 #temps_reel_couleur   
-@app.callback(
-    Output("temps_reel_couleur","children"),
-    Input("dropdown_temps_reel","value")
-)
+# # @app.callback(
+#     Output("temps_reel_couleur","children"),
+#     Input("dropdown_temps_reel","value")
+# )
 
-def update_output_temps_couleurs(value_slctd):
-    price_tps = test_price(value_slctd)
-    return "Price : {}".format(price_tps[0])
+# def update_output_temps_couleurs(value_slctd):
+    # price_tps = test_price(value_slctd)
+    # return "Price : {}".format(price_tps[0])
 # ------- RUN APP --------------------------------------------------------
 def launch_app():
     return app.run_server(debug=True)  
