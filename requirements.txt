@@ -18,6 +18,7 @@ gunicorn
 Flask==2.1.2
 Flask-Compress==1.12
 Flask-SQLAlchemy==2.5.1
+flask_sqlalchemy
 fonttools==4.32.0
 idna==3.3
 ipykernel==6.13.0
