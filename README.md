@@ -13,13 +13,13 @@
 <p>Login in to Heroku</p>
 <pre><code>heroku login</code></pre>
 <p>Clone the repository github heroku</p>
-<pre><code>heroku git:clone -a avacrypto</code></pre>
-<pre><code>cd avacrypto</code></pre>
+<pre><code>heroku git:clone -a avacrypto</code>
+<code>cd avacrypto</code></pre>
 <p>After that you have to build the project, and restart it</p>
-<pre><code>heroku plugins:install heroku-builds</code></pre>
-<pre><code>heroku builds:cancel</code></pre>
-<pre><code>heroku restart</code></pre>
+<pre><code>heroku plugins:install heroku-builds</code>
+<code>heroku builds:cancel</code>
+<code>heroku restart</code></pre>
 <p>To finish deploy the application in heroku</p>
-<pre><code>git add .</code></pre>
-<pre><code>git commit -am "YOUR COMMIT"</code></pre>
-<pre><code>git push --force heroku main</code></pre>
+<pre><code>git add .</code>
+<code>git commit -am "YOUR COMMIT"</code>
+<code>git push --force heroku main</code></pre>
