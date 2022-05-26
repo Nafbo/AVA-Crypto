@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 import pytest
 
-@pytest.fixture
 def test_all_address_wallet(addresses):
     '''Formatting the information retrieved for wallets
     
@@ -34,6 +33,10 @@ def test_all_address_wallet(addresses):
         cf = cf.sort_values(by=['Name'] ,ascending=True)
     return(cf, total)
 
+@pytest.fixture
+def test_all_address_wallet_fixture(addresses):
+    cf, total = test_all_address_wallet(addresses)
+    return(cf, total)
 
 if __name__ == '__main__':
     print(test_all_address_wallet(np.array([["0x102e0206113e2b662ea784eb5db4e8de1d18c8ae",1], ["0x68a01e1b22790c3b074a7cfe4b522de16c4367ef", 56]])))

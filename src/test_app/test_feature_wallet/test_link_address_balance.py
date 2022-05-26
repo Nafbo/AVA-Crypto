@@ -1,5 +1,6 @@
 import requests as rq
 import pandas as pd
+import pytest
 
 def test_link_address_balance(address, chain_id):
     '''Retrieving and formatting information from the api
@@ -15,8 +16,12 @@ def test_link_address_balance(address, chain_id):
     api_key = 'ckey_4e20bd1de6b3424c81eefbd7157'
     url = "https://api.covalenthq.com/v1/{}/address/{}/balances_v2/?key={}".format(chain_id, address, api_key)
     r = rq.get(url).json()['data']['items']
-    df = pd.DataFrame(r)
-        
+    df = pd.DataFrame(r)  
+    return(df)
+
+@pytest.fixture(name="test_link_address_balance")
+def test_link_address_balance_fixture(address, chain_id):
+    df = test_link_address_balance(address, chain_id)
     return(df)
 
 if __name__ == '__main__':
