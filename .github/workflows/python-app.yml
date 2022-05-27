@@ -45,6 +45,5 @@ jobs:
         HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
       if: github.ref == 'refs/heads/main' && job.status == 'success'
       run: |
-        git fetch --all --unshallow
         git remote add heroku https://heroku:${{ env.HEROKU_API_TOKEN}}@git.heroku.com/avacrypto.git
         git push heroku HEAD:main -f
