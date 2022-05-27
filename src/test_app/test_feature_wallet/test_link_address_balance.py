@@ -1,7 +1,7 @@
 import requests as rq
 import pandas as pd
 import pytest
-@pytest.fixture
+
 def test_link_address_balance(address, chain_id):
     '''Retrieving and formatting information from the api
     
@@ -19,10 +19,3 @@ def test_link_address_balance(address, chain_id):
     df = pd.DataFrame(r)  
     return(df)
 
-@pytest.fixture(name="test_link_address_balance")
-def test_link_address_balance_fixture(address, chain_id):
-    df = test_link_address_balance(address, chain_id)
-    return(df)
-
-if __name__ == '__main__':
-    print(test_link_address_balance("0x9f5c44f84901018275b7f02f0feF1b6183A1B5A1", 56))

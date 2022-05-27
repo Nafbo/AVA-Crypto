@@ -36,10 +36,3 @@ def test_wallet(address,chain_id):
 
     return(cf, total)
 
-@pytest.fixture(name="test_wallet")
-def test_wallet_fixture(address,chain_id):
-    cf,total = test_wallet(address,chain_id)
-    return(cf, total)
-
-if __name__ == '__main__':
-    print(test_wallet("0xd5Ac26b0FE1D3Ae9A7679cD92598fF02d79A9E26", 1))
