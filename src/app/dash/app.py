@@ -2,6 +2,7 @@
 
 from tracemalloc import stop
 import dash
+
 from dash import dcc
 from dash import html
 from dash.dependencies import Output, Input, State
@@ -11,7 +12,6 @@ import pandas as pd
 import base64
 import plotly.graph_objs as go
 from dash import Dash, dash_table
-import dash_auth
 import dash_core_components as dcc
 import flask
 from flask_login import LoginManager,UserMixin, current_user
@@ -81,7 +81,6 @@ app = dash.Dash(__name__, server=server,
                 external_stylesheets=[dbc.themes.QUARTZ],  #dbc.themes.ZEPHIR
                 meta_tags=[{'name': 'viewport',       # permet à l'app d'être responsive pour téléphone  
                      'content': 'width=device-width, initial-scale=1.0'}])
-
 
 
 # Mise à jour de la configuration du serveur Flask avec la clé secrète pour chiffrer le cookie de session de l'utilisateur.

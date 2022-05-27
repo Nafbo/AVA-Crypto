@@ -1,11 +1,11 @@
-from src.app.feature_transaction.link_address_transaction import link_address_transaction 
+from src.test_app.test_feature_transaction.test_link_address_transaction import test_link_address_transaction 
 import pandas as pd
 from time import *
 import dateutil.parser
 
 
 
-def transaction(address,chain_id):
+def test_transaction(address="0x102e0206113e2b662ea784eb5db4e8de1d18c8ae",chain_id=1):
     '''Formatting the information retrieved for a wallet
     
     Parameters:
@@ -15,7 +15,7 @@ def transaction(address,chain_id):
     Returns:
     cf (Dataframe): dataframe usable with the Type of transaction, the Balance, the Holdings (en USD), the From of the transaction, the To of the transaction and the Succesful of the transaction for a wallet
     '''
-    df= link_address_transaction(address,chain_id)
+    df= test_link_address_transaction(address,chain_id)
     transaction = {}
     transaction_response = []
     
@@ -89,18 +89,5 @@ def transaction(address,chain_id):
     cf = pd.DataFrame(transaction_response)
     # cf = cf.sort_values(by=['Date'] ,ascending=False)       
     return (cf)
-
-
-if __name__ == '__main__':
-    print(transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1))
-
-
-'''
-Cette fonction prend pour argument l'adresse du portefeuille et la blockchain.
-Pour afficher toutes les transactions de ce portefeuille: savoir si c'est reçu ou envoyé "type", la valeur échangé "value".
-Le portefeuille d'envoyeur "from", le portefeuille du receveur "to", la date du transfert "date".
-Ainsi que si c'est la transaction a été réussite ou pas "successful"
-'''
-
 
 

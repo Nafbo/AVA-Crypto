@@ -2,7 +2,7 @@ from pycoingecko import CoinGeckoAPI
 cg = CoinGeckoAPI()
 import pandas as pd
 
-def price(crypto):
+def test_price(crypto='bitcoin'):
     '''The current price of a cryptocurrency
     
     Parameters:
@@ -19,5 +19,3 @@ def price(crypto):
     else :
         return(price[crypto]['usd'], 'red')
 
-if __name__ == '__main__':
-    print(price('bitcoin'))  

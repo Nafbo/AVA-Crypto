@@ -1,7 +1,7 @@
 import requests as rq
 import pandas as pd
 
-def link_address_balance(address, chain_id):
+def test_link_address_history(address="0xb71f6064b01c7e2e14f3bb93db665400ac7acb37", chain_id=1):
     '''Retrieving and formatting information from the api
     
     Parameters:
@@ -13,11 +13,9 @@ def link_address_balance(address, chain_id):
     '''
     
     api_key = 'ckey_4e20bd1de6b3424c81eefbd7157'
-    url = "https://api.covalenthq.com/v1/{}/address/{}/balances_v2/?key={}".format(chain_id, address, api_key)
-    r = rq.get(url).json()['data']['items']
+    url = "https://api.covalenthq.com/v1/{}/address/{}/portfolio_v2/?key={}".format(chain_id, address, api_key)
+    r = rq.get(url).json()['data']['items'][0]['holdings']
     df = pd.DataFrame(r)
-        
+
     return(df)
 
-if __name__ == '__main__':
-    print(link_address_balance("0x9f5c44f84901018275b7f02f0feF1b6183A1B5A1", 56))
