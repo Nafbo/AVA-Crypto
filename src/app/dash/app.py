@@ -14,6 +14,7 @@ from dash import Dash, dash_table
 import flask
 from flask_login import LoginManager,UserMixin, current_user
 import os
+from flask_sqlalchemy import SQLAlchemy
 
 # ------- LINK WITH FEATURES --------------------------------------------------------
 
@@ -21,20 +22,8 @@ from src.app.feature_wallet.wallet import wallet
 from src.app.feature_history.wallet_history import wallet_history
 from src.app.feature_price.price import price
 from src.app.feature_transaction.transaction import transaction
-
-
-# ------- DATA INITILISATION --------------------------------------------------------
-
-adress_curent = "0xdB24106BfAA506bEfb1806462332317d638B2d82"
-blockchain = 1
-
-default_transaction=transaction(adress_curent, blockchain)
-
-wallet,total=wallet(adress_curent, blockchain)
-default_name=wallet['Name'].head(1)
-
-wallet_history = wallet_history(adress_curent, blockchain)
-history = px.line(wallet_history, x='Date', y='Holdings (en USD)')
+from src.app.database.database import create_user
+from src.app.database.database import portefolio_by_user
 
  #-------------- add images --------------#
 
@@ -68,6 +57,32 @@ encoded_image_reseaux = base64.b64encode(open(reseaux_filename, 'rb').read())
  #-------------- app Flask --------------#
 
 server = flask.Flask(__name__)
+server.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://yeplwxjlhbauvi:48668289ae0c54004d2e532014cdcf6a2e9d34b4b63b74f0c35801b6b6bdc7dd@ec2-54-228-125-183.eu-west-1.compute.amazonaws.com:5432/d5e834h92a2de1"
+server.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db = SQLAlchemy(server)
+db.init_app(server)
+
+class Users(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(200))
+    password = db.Column(db.String(200))
+    portefolios = db.relationship('Portofolio')
+    
+    def __init__(self, email, password):
+        self.email = email
+        self.password = password
+        
+class Portofolio(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    wallet = db.Column(db.String(100))
+    chain_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    def __init__(self, wallet, chain_id, user_id):
+        self.wallet = wallet
+        self.chain_id = chain_id
+        self.user_id = user_id
 
 app = dash.Dash(__name__, server=server,
                 title='AVA crypto',
@@ -76,10 +91,6 @@ app = dash.Dash(__name__, server=server,
                 external_stylesheets=[dbc.themes.QUARTZ],
                 meta_tags=[{'name': 'viewport',         
                      'content': 'width=device-width, initial-scale=1.0'}])
-
-
-# Mise à jour de la configuration du serveur Flask avec la clé secrète pour chiffrer le cookie de session de l'utilisateur.
-app.secret_key=SECRET_KEY=os.getenv('SECRET_KEY')
 
 
 # ------- LAYOUT --------------------------------------------------------
@@ -174,6 +185,271 @@ index_page = dbc.Container([
 
 ],fluid = True)
 
+# --------------------------------------------- PAGE LOGIN ------------------------------------------------ >
+
+login = dbc.Container([
+
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+
+    dbc.Row([
+        html.Div([
+
+            html.Img(
+                src='data:image/png;base64,{}'.format(encoded_image_ava.decode()),
+                height = "100%"
+            ),
+        ], style={'textAlign': 'center'}),   
+    ], className="mb-4"),
+
+            html.Br(),
+            dcc.Location(id='url_login', refresh=True),
+            html.Br(),
+    dbc.Row(
+        html.Div([
+                html.H3("Please log in to continue :", id='h1')
+                
+        ],style={'textAlign': 'center'})
+    ),
+           
+    html.Br(),
+    
+    dbc.Row([
+        html.Div([
+            dbc.Col([
+                dbc.Input(placeholder='Enter your username',
+                     type='text', id='uname-box', className="form-floating"),
+                html.Br(),
+                dbc.Input(placeholder='Enter your password',
+                    type='password', id='pwd-box', className="form-floating"),
+            ],  width={'size':4, "offset":4}),
+        ],style={'textAlign': 'center'})
+        
+    ], className="ml-3 mx-1 mb-3"),
+
+    dbc.Row([
+        html.Div([
+             html.Button(children='Login', n_clicks=0,
+                    type='submit', id='login-button', className="btn btn-light", style={'textAlign': 'center'}),
+        ], style={'textAlign': 'center'})
+    ], className ="mb-3"),
+       
+    dbc.Row([
+         html.Div(children='', id='output-state'),
+    ]),    
+   
+    html.Br(),
+    html.Br(),
+    html.Br(),
+
+
+    dbc.Row([
+        
+        dbc.Col([
+            dbc.Card([
+                dbc.NavLink('Register', href='/inscription', style={'textAlign': 'center'})
+            ],  className="mb-2" )
+        ], width={'size':2, "offset":4},),
+
+        dbc.Col([
+            dbc.Card([
+                dbc.NavLink('Home Page', href='/',style={'textAlign': 'center'})
+            ],  className="mb-2" )
+        ],width={'size':2},),
+    ]),
+
+            
+
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+
+    html.Div([
+    
+        html.Img(
+                src='data:image/png;base64,{}'.format(encoded_image_reseaux.decode()),
+                height = "100%"
+            )],style={'textAlign': 'center'})   
+],fluid = True)
+            
+
+@app.callback(
+    Output('url_login', 'pathname'), Output('output-state', 'children'), [Input('login-button', 'n_clicks')], [State('uname-box', 'value'), State('pwd-box', 'value')])
+def login_button_click(n_clicks, username, password):
+    if n_clicks > 0:
+        portofolios , username_db , password_db =portefolio_by_user(username, password)
+        if username == username_db and password == password_db:
+            return '/page-2', test(username=username_db, password=password_db)
+        else:
+            return '/login', 'Incorrect username or password'
+        
+    
+
+inscription = html.Div([
+
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+
+    dbc.Row([
+        html.Div([
+
+            html.Img(
+                src='data:image/png;base64,{}'.format(encoded_image_ava.decode()),
+                height = "100%"
+            ),
+        ], style={'textAlign': 'center'}),   
+    ], className="mb-4"),
+
+
+    dcc.Location(id='url_inscription', refresh=True),
+
+    dbc.Row(
+        html.Div([
+                html.H3("Register:", id='h1')
+                
+        ],style={'textAlign': 'center'})
+    ),
+           
+    html.Br(),
+
+    dbc.Row([
+        html.Div([
+            dbc.Col([
+                dbc.Input(placeholder='Enter a new username',
+                            type='text', id='uname-box-2',className="form-floating"),
+                
+                html.Br(),
+
+                dbc.Input(placeholder='Enter a new password',
+                            type='password', id='pwd-box-2', className="form-floating"),
+                
+                html.Br(),
+
+                dbc.Input(placeholder='Confirm password',
+                            type="Password", id='pwd-box-3', className="form-floating"),
+            ],  width={'size':4, "offset":4}),
+        ],style={'textAlign': 'center'})
+        
+    ], className="ml-3 mx-1 mb-3"),
+                
+    dbc.Row([
+        html.Div([
+             html.Button(children='Register', n_clicks=0,
+                              type='submit', id='login-button-2', className="btn btn-light", style={'textAlign': 'center'}),
+        ], style={'textAlign': 'center'})
+    ], className ="mb-3"),             
+                 
+    dbc.Row([
+         html.Div(children='', id='output-state-2'),
+    ]),    
+
+    
+    dbc.Row([
+        
+        dbc.Col([
+            dbc.Card([
+                dbc.NavLink('Login', href='/login', style={'textAlign': 'center'})
+            ],  className="mb-2" )
+        ], width={'size':2, "offset":4},),
+
+        dbc.Col([
+            dbc.Card([
+                dbc.NavLink('Home Page', href='/',style={'textAlign': 'center'})
+            ],  className="mb-2" )
+        ],width={'size':2},),
+    ]),    
+
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+
+    html.Div([
+    
+        html.Img(
+                src='data:image/png;base64,{}'.format(encoded_image_reseaux.decode()),
+                height = "100%"
+            )
+    ],style={'textAlign': 'center'})   
+])
+
+@app.callback(Output('url_inscription', 'pathname'),Output('output-state-2', 'children'), Input('login-button-2', 'n_clicks'),[State('uname-box-2', 'value'), State('pwd-box-2', 'value'),State('pwd-box-3', 'value')])
+def inscription_button_click(n_clicks, username, password, Password):
+    if n_clicks > 0:
+        if username == 'test' and password == 'test':
+                return '/inscription', 'Username or password is already used'
+            
+        elif password != Password:
+            return '/inscription', 'password and password confirmation are not the same'
+        
+        else:
+            create_user(username, password)
+            return '/page-2' , ''
+        
+    
+@app.callback(Output('page-content', 'children'), Output('redirect', 'pathname'),
+              [Input('url', 'pathname')])
+def display_page(pathname):
+# ''' callback to determine layout to return '''
+    # Nous devons déterminer deux choses à chaque fois que l'utilisateur navigue :
+    # Peut-il accéder à cette page ? Si oui, nous retournons simplement la vue
+    # Sinon, s'il doit d'abord être authentifié, nous devons le rediriger vers la page de connexion.
+    # Nous avons donc deux sorties, la première est la vue que nous allons retourner.
+    # La deuxième est une redirection vers une autre page si c'est nécessaire.
+    # Nous configurons les valeurs par défaut au début, avec redirect to dash.no_update ; ce qui signifie simplement qu'il faut garder l'url demandée.
+    view = None
+    url = dash.no_update
+    if pathname == '/login':
+        view = login
+    elif pathname == '/page-2':
+        view = page_2_layout
+    elif pathname =='/inscription':
+        view = inscription
+    else:
+        view = index_page
+    return view, url  
+
+
+# ------- DATA INITILISATION --------------------------------------------------------
+
+def test(username,password):
+    print(username,password)
+    return(username,password) 
+
+# username,password = test()
+portofolios , username_db , password_db = portefolio_by_user("victor.bonnaf@gmail.com", "victor")  
+compte = 1
+
+default_transaction=transaction(portofolios[compte][0], portofolios[compte][1])
+
+wallet,total=wallet(portofolios[compte][0], portofolios[compte][1])
+default_name=wallet['Name'].head(1)
+
+wallet_history = wallet_history(portofolios[compte][0], portofolios[compte][1])
+history = px.line(wallet_history, x='Date', y='Holdings (en USD)')
+
+
  #-------------- Second page --------------#
 
 page_2_layout = dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
@@ -198,7 +474,7 @@ page_2_layout = dbc.Container([    #dbc.Container mieux que html.div pour bootst
         dbc.Col([
             dbc.Row([
                 dbc.Col([
-                    html.H4(adress_curent, className='modal-title ')
+                    html.H4(portofolios[compte][0], className='modal-title ')
                 ],className="py-1 "),  
             ]), #parametre du text w/ bootstrap   df. bootstrap cheatsheet  
         ], className="card border-success ", width={'size':9, 'offset':1}),
@@ -661,273 +937,6 @@ def update_graph(value_slctd):
     wallet_slctd = wallet[wallet['Name'].isin(value_slctd)]
     fighist = px.histogram(wallet_slctd, x='Name', y='Balance', color="Name",  hover_name='Name')
     return fighist
-
-# ------------LOGIN MANAGER de connexion sera utilisé pour connecter et déconnecter les utilisateurs --------------- >
-
-login_manager = LoginManager()
-login_manager.init_app(server)
-login_manager.login_view = '/login'
-
-
-# Modèle de données de l'utilisateur. Il doit comporter au moins self.id.
-
-class User(UserMixin):
-    def __init__(self, username):
-        self.id = username
-
-@login_manager.user_loader
-def load_user(username):
-    ''' Cette fonction charge l'utilisateur par son identifiant. Typiquement, cela permet de rechercher l'utilisateur dans une base de données d'utilisateurs.
-        Nous n'allons pas enregistrer ou rechercher des utilisateurs dans cet exemple, puisque nous allons simplement nous connecter en utilisant le serveur LDAP.
-        Nous allons donc simplement retourner un objet User avec le nom d'utilisateur passé.
-    '''
-    return User(username)
-
-# --------------------------------------------- PAGE LOGIN ------------------------------------------------ >
-
-login = dbc.Container([
-
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-
-    dbc.Row([
-        html.Div([
-
-            html.Img(
-                src='data:image/png;base64,{}'.format(encoded_image_ava.decode()),
-                height = "100%"
-            ),
-        ], style={'textAlign': 'center'}),   
-    ], className="mb-4"),
-
-            html.Br(),
-            dcc.Location(id='url_login', refresh=True),
-            html.Br(),
-    dbc.Row(
-        html.Div([
-                html.H3("Please log in to continue :", id='h1')
-                
-        ],style={'textAlign': 'center'})
-    ),
-           
-    html.Br(),
-    
-    dbc.Row([
-        html.Div([
-            dbc.Col([
-                dbc.Input(placeholder='Enter your username',
-                     type='text', id='uname-box', className="form-floating"),
-                html.Br(),
-                dbc.Input(placeholder='Enter your password',
-                    type='password', id='pwd-box', className="form-floating"),
-            ],  width={'size':4, "offset":4}),
-        ],style={'textAlign': 'center'})
-        
-    ], className="ml-3 mx-1 mb-3"),
-
-    dbc.Row([
-        html.Div([
-             html.Button(children='Login', n_clicks=0,
-                    type='submit', id='login-button', className="btn btn-light", style={'textAlign': 'center'}),
-        ], style={'textAlign': 'center'})
-    ], className ="mb-3"),
-       
-    dbc.Row([
-         html.Div(children='', id='output-state'),
-    ]),    
-   
-    html.Br(),
-    html.Br(),
-    html.Br(),
-
-
-    dbc.Row([
-        
-        dbc.Col([
-            dbc.Card([
-                dbc.NavLink('Register', href='/inscription', style={'textAlign': 'center'})
-            ],  className="mb-2" )
-        ], width={'size':2, "offset":4},),
-
-        dbc.Col([
-            dbc.Card([
-                dbc.NavLink('Home Page', href='/',style={'textAlign': 'center'})
-            ],  className="mb-2" )
-        ],width={'size':2},),
-    ]),
-
-            
-
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-
-    html.Div([
-    
-        html.Img(
-                src='data:image/png;base64,{}'.format(encoded_image_reseaux.decode()),
-                height = "100%"
-            )],style={'textAlign': 'center'})   
-],fluid = True)
-            
-
-@app.callback(
-    Output('url_login', 'pathname'), Output('output-state', 'children'), [Input('login-button', 'n_clicks')], [State('uname-box', 'value'), State('pwd-box', 'value')])
-def login_button_click(n_clicks, username, password):
-    if n_clicks > 0:
-        if username == 'test' and password == 'test':
-            return '/page-2', ''
-        else:
-            return '/login', 'Incorrect username or password'
-        
-    
-
-inscription = html.Div([
-
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-
-    dbc.Row([
-        html.Div([
-
-            html.Img(
-                src='data:image/png;base64,{}'.format(encoded_image_ava.decode()),
-                height = "100%"
-            ),
-        ], style={'textAlign': 'center'}),   
-    ], className="mb-4"),
-
-
-    dcc.Location(id='url_inscription', refresh=True),
-
-    dbc.Row(
-        html.Div([
-                html.H3("Register:", id='h1')
-                
-        ],style={'textAlign': 'center'})
-    ),
-           
-    html.Br(),
-
-    dbc.Row([
-        html.Div([
-            dbc.Col([
-                dbc.Input(placeholder='Enter a new username',
-                            type='text', id='uname-box-2',className="form-floating"),
-                
-                html.Br(),
-
-                dbc.Input(placeholder='Enter a new password',
-                            type='password', id='pwd-box-2', className="form-floating"),
-                
-                html.Br(),
-
-                dbc.Input(placeholder='Confirm password',
-                            type="Password", id='pwd-box-3', className="form-floating"),
-            ],  width={'size':4, "offset":4}),
-        ],style={'textAlign': 'center'})
-        
-    ], className="ml-3 mx-1 mb-3"),
-                
-    dbc.Row([
-        html.Div([
-             html.Button(children='Register', n_clicks=0,
-                              type='submit', id='login-button-2', className="btn btn-light", style={'textAlign': 'center'}),
-        ], style={'textAlign': 'center'})
-    ], className ="mb-3"),             
-                 
-    dbc.Row([
-         html.Div(children='', id='output-state-2'),
-    ]),    
-
-    
-    dbc.Row([
-        
-        dbc.Col([
-            dbc.Card([
-                dbc.NavLink('Login', href='/login', style={'textAlign': 'center'})
-            ],  className="mb-2" )
-        ], width={'size':2, "offset":4},),
-
-        dbc.Col([
-            dbc.Card([
-                dbc.NavLink('Home Page', href='/',style={'textAlign': 'center'})
-            ],  className="mb-2" )
-        ],width={'size':2},),
-    ]),    
-
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-
-    html.Div([
-    
-        html.Img(
-                src='data:image/png;base64,{}'.format(encoded_image_reseaux.decode()),
-                height = "100%"
-            )
-    ],style={'textAlign': 'center'})   
-])
-
-@app.callback(Output('url_inscription', 'pathname'),Output('output-state-2', 'children'), Input('login-button-2', 'n_clicks'),[State('uname-box-2', 'value'), State('pwd-box-2', 'value'),State('pwd-box-3', 'value')])
-
-def logout_button_clickk(n_clicks, username, password, Password):
-    if n_clicks > 0:
-        if username == 'test' and password == 'test':
-                return '/inscription', 'Username or password is already used'
-            
-        elif password != Password:
-            return '/inscription', 'password and password confirmation are not the same'
-        
-        else:
-            return '/page-2' , ''
-        
-    
-@app.callback(Output('page-content', 'children'), Output('redirect', 'pathname'),
-              [Input('url', 'pathname')])
-def display_page(pathname):
-# ''' callback to determine layout to return '''
-    # Nous devons déterminer deux choses à chaque fois que l'utilisateur navigue :
-    # Peut-il accéder à cette page ? Si oui, nous retournons simplement la vue
-    # Sinon, s'il doit d'abord être authentifié, nous devons le rediriger vers la page de connexion.
-    # Nous avons donc deux sorties, la première est la vue que nous allons retourner.
-    # La deuxième est une redirection vers une autre page si c'est nécessaire.
-    # Nous configurons les valeurs par défaut au début, avec redirect to dash.no_update ; ce qui signifie simplement qu'il faut garder l'url demandée.
-    view = None
-    url = dash.no_update
-    if pathname == '/login':
-        view = login
-    elif pathname == '/page-2':
-        view = page_2_layout
-    elif pathname =='/inscription':
-        view = inscription
-    else:
-        view = index_page
-    return view, url    
-
-
     
 # ----------------------------- RUN APP ------------------------------------------------ >
 
@@ -937,4 +946,5 @@ def launch_app():
 
 # if __name__=='__main__':
 #     app.run_server(debug=True)   
+
 
