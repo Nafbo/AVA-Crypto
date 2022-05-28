@@ -32,7 +32,6 @@ plotly==5.8.0
 psycopg2==2.9.3
 pycoingecko==2.2.0
 pycosat==0.6.3
-pycurl==7.44.1
 pyparsing==3.0.9
 python-dateutil==2.8.2
 pytz==2022.1
