@@ -63,8 +63,7 @@ wallet_list = ["stp","marche","stpppppppppp"]
 
 app=dash.Dash(__name__, external_stylesheets=[dbc.themes.QUARTZ],  #dbc.themes.ZEPHIR
             meta_tags=[{'name': 'viewport',       # permet à l'app d'être responsive pour téléphone  
-                     'content': 'width=device-width, initial-scale=1.0'}],
-            suppress_callback_exceptions=True       
+                     'content': 'width=device-width, initial-scale=1.0'}]
                      
             )
 
@@ -166,13 +165,12 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
     dbc.Row([
         dbc.Col([
             dbc.Row([
-                dbc.Card([ 
-                    dbc.CardHeader("Your Address :"),
+                dbc.Card([
+                    dbc.CardHeader("Your Address : " ),
                     dbc.CardBody([
                         dcc.Location(id="url_wallet"),
                         dbc.Nav(id='list_wallet', children = [], vertical=True),])
-                    ]) 
-              
+                    ],className='card border-secondary mb-3 ') 
             ],className="mb-3"),
             # dbc.Row(id="add_wallet"),
             dbc.Row([
@@ -248,22 +246,29 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
 
  #-------------- Add wallet Callback --------------# 
 
-
 @app.callback(
-    [Output("list_wallet","children"),Output("wallet_list","data")],
+    Output("wallet_list","data"),
     [Input("dropdown_blockchain","value"), Input("text_address","value"), Input("enter","n_clicks") ]
 )
-def update_liste_wallet(value1, value2, n_clicks):
-    list =[]
+def update_storage_wallet(value1, value2, n_clicks) :
     liste_wallet =[]
-    store = "{}-{}".format(value2, value1)
+    store = "{} - {}".format(value2, value1)
     for i in range(0, n_clicks):
         liste_wallet.append(store)
-    for i in range(len(liste_wallet)) :  
+    return liste_wallet
+
+
+@app.callback(
+    Output("list_wallet","children"),
+    Input("wallet_list","data")
+)
+def update_liste_wallet(data):
+    list =[]
+    for i in range(len(data)) :  
         list.append(
-            dbc.Button("wallet {}".format(i+1),id = "button {}".format(i+1), className="btn btn-outline-light mb-3", style={"background-color":"transparent"}))
+            dbc.NavLink(data[i], href="/{}".format(data[i])))
             
-    return list, liste_wallet
+    return list 
 
 # @app.callback (
 #     Output(),

@@ -1,13 +1,14 @@
 # -----IMPORT -----------------------------------------------------
-from ctypes import alignment
+# from ctypes import alignment
 from tracemalloc import stop
-from turtle import width
+# from turtle import width
+
 import dash
 from dash import dcc
 from dash import html
 from dash.dependencies import Output, Input, State
 import dash_bootstrap_components as dbc
-from matplotlib import image
+# from matplotlib import image
 import plotly.express as px
 import pandas as pd
 import base64

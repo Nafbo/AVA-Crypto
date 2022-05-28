@@ -1,5 +1,6 @@
 # -----IMPORT -----------------------------------------------------
 from ctypes import alignment
+from importlib.resources import path
 from tracemalloc import stop
 from turtle import width
 import dash
@@ -24,17 +25,17 @@ from src.app.feature_transaction.transaction import transaction
 # wallet["Name"].fillna("Unknown", inplace=True)
 #print (wallet("0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1))
 
-adress_curent = "0xdB24106BfAA506bEfb1806462332317d638B2d82"
-blockchain = 1
-default_transaction=transaction(adress_curent, blockchain)
+adress_curent_def = "0xdB24106BfAA506bEfb1806462332317d638B2d82"
+blockchain_def = 1
+default_transaction=transaction(adress_curent_def, blockchain_def)
 # print(default_transaction)
 # "0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", 1
 
-wallet,total=wallet(adress_curent, blockchain)
-default_name=wallet['Name'].head(1)
+wallet,total=wallet(adress_curent_def, blockchain_def)
+default_name_def=wallet['Name'].head(1)
 
-wallet_history = wallet_history(adress_curent, blockchain)
-history = px.line(wallet_history, x='Date', y='Holdings (en USD)')
+# wallet_history = wallet_history(adress_curent, blockchain)
+# history = px.line(wallet_history, x='Date', y='Holdings (en USD)')
 
 image_ava_filename = 'src/app/dash/ressources/AVA_logo.png'
 encoded_image_ava = base64.b64encode(open(image_ava_filename, 'rb').read()) 
@@ -57,14 +58,13 @@ encoded_image_cardano = base64.b64encode(open(cardano_logo, 'rb').read())
 button_filename = 'src/app/dash/ressources/AVA_button.png'
 encoded_image_button = base64.b64encode(open(button_filename, 'rb').read())
 
-wallet_list = ["stp","marche","stpppppppppp"]
+# wallet_list = ["stp","marche","stpppppppppp"]
 
 # ------- APP -----------------------------------------------------------
 
 app=dash.Dash(__name__, external_stylesheets=[dbc.themes.QUARTZ],  #dbc.themes.ZEPHIR
             meta_tags=[{'name': 'viewport',       # permet à l'app d'être responsive pour téléphone  
-                     'content': 'width=device-width, initial-scale=1.0'}],
-            suppress_callback_exceptions=True       
+                     'content': 'width=device-width, initial-scale=1.0'}]
                      
             )
 
@@ -73,18 +73,15 @@ app=dash.Dash(__name__, external_stylesheets=[dbc.themes.QUARTZ],  #dbc.themes.Z
 #     dbc.NavLink("Transactions", href="/transactions", active ="exact")
 # ]),
 
-# content = html.Div(id="page-content", className="card border-secondary mb-3"),
+# content = html.Div(id="page-content", className="card border-secondary mb-3"),#dbc.Container mieux que html.div pour bootstrap
 # ------- LAYOUT --------------------------------------------------------
 
-app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
+app.layout= dbc.Container([    
 
  #-------------- HEADER --------------#
-    dcc.Store(id="store_current_address"),
-    dcc.Store(id="store_current_blockchain"),
-    dcc.Store(id="store_wallet_all"),
 
-    dbc.Row([   #divise la page en 3 ligne : le titres / dropdown / derniers bar chart
-        dbc.Col([  #divise les lignes en colonnes ici que le titre
+    dbc.Row([   
+        dbc.Col([  
             html.Div([
 
                 html.Img(
@@ -93,93 +90,37 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                 ),
             ]), 
         ], width=1),
- 
+
         dbc.Col([
-            dbc.Row([
-                dbc.Col([
-                    html.H4(adress_curent, className='modal-title ')
-                ],className="py-1 "),  
-            ]), #parametre du text w/ bootstrap   df. bootstrap cheatsheet  
-        ], className="card border-success ", width={'size':9, 'offset':1}),
-        
-        dbc.Col([
-            html.Button([
-                html.Img(
-                    src='data:image/png;base64,{}'.format(encoded_image_button.decode()),
-                    height = "50px"
-                ),
+        html.Button([
+            html.Img(
+                src='data:image/png;base64,{}'.format(encoded_image_button.decode()),
+                height = "50px"
+            ),
             ], className='btn btn-secondary')
         ],width=1), 
-    ], className="m-2"),  
+    ], className="m-2"),
 
- #-------------- BODY --------------#
-
-    #-------------- TOP --------------#
-    dbc.Row([
-        dbc.Col([
-            dbc.Row([
-                dbc.Card([
-                    html.H3("Overall"),
-                    html.H4(total),html.H4("$")
-                ], className='card border-light mb-3 py-5 text-md-center'),
-            ],style={"height": "50%"}),
-        ], width=2),
-
-        dbc.Col([
-            dbc.Card([
-                dbc.CardHeader([
-                    
-                    html.H4("Balance"),
-                    dcc.Dropdown(id='dropdown_details',
-                        multi=False, #peut choisir qu'une seule valeur
-                        value=default_name, #valeur par defaut 
-                        options=[{'label':x, 'value':x} 
-                                    for x in sorted(wallet['Name'].unique())] #choisis les valeurs selon la colonne Name : .unique() prends que les valeurs 1 fois sans duplicats
-                        ),
-                ]),
+        dbc.Row([
+            dbc.Col([
+                dbc.Row([
+                    dbc.Card([
+                        dbc.CardHeader("Your Address : " ),
+                        dbc.CardBody([
+                            dcc.Location(id="url_wallet"),
+                            dbc.Nav(id='list_wallet', children = [], vertical=True),])
+                        ],className='card border-secondary mb-3 ') 
+                ],className="mb-3"),
+                # dbc.Row(id="add_wallet"),            
+        ],width=2), #style={"height": "100%"}
+        ]),
  
-                dbc.CardBody(id='details_output')
-               
-            ],style={"height": "100%"}, className='card border-light'),   
-        ], className  ='mb-3'),
 
-        dbc.Col([
-            dbc.Card([
-                dbc.CardHeader([
-                    html.H4("Token Price"),
+        dbc.Row([
+                    html.Button("Add a wallet + ", id="open", className="btn btn-secondary"),
+                ]), 
 
-                    dcc.Dropdown(id='dropdown_temps_reel', 
-                        multi=False, #peut choisir qu'une seule valeur
-                        value="bitcoin", #valeur par defaut 
-                        options=["bitcoin","ethereum","cardano"] #choisis les valeurs selon la colonne Name : .unique() prends que les valeurs 1 fois sans duplicats
-                        ),
-                ]),
-
-                dbc.CardBody(id="temps_reel_output"),
-
-            ],style={"height": "100%"}, className='card border-light'),   
-        ],className="mb-3"),
-    ]),
-
-    #-------------- BOTTOM --------------#   
-    dcc.Store (id="wallet_list", data=[]),
-    dbc.Row([
-        dbc.Col([
-            dbc.Row([
-                dbc.Card([ 
-                    dbc.CardHeader("Your Address :"),
-                    dbc.CardBody([
-                        dcc.Location(id="url_wallet"),
-                        dbc.Nav(id='list_wallet', children = [], vertical=True),])
-                    ]) 
-              
-            ],className="mb-3"),
-            # dbc.Row(id="add_wallet"),
-            dbc.Row([
-                html.Button("Add a wallet + ", id="open", className="btn btn-secondary"),
-            ]),
-
-            dbc.Modal([
+        dbc.Modal([
                 dbc.ModalHeader("Add another wallet"),
                 dbc.ModalBody(
                     dbc.Form(
@@ -189,8 +130,8 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                                     html.H5("Network", className="mr-2 mb-3"),
                                     dcc.Dropdown(id='dropdown_blockchain', 
                                         multi=False, #peut choisir plusieurs valeurs
-                                        value="ethereum - 1",
-                                        options=["Ethereum - 1"," Binance Smart Chain - 56", "Matic Testnet Mumbai - 8001", "RSK Testnet - 31", "Moonbeam Moonbase Alpha - 1287", "Fantom Opera - 250"],
+                                        value="ethereum-1",
+                                        options=["Ethereum-1"," Binance Smart Chain-56", "Matic Testnet Mumbai-8001", "RSK Testnet-31", "Moonbeam Moonbase Alpha-1287", "Fantom Opera-250"],
                                         placeholder="Select the blockchain",
                                         style={"width": "550px", "color" :"black"},
                                         className="mt-3 mb-3 "
@@ -219,26 +160,164 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
                 # centered=True,    # True, False
                 fade=True         # True, False
             ),
+ 
+    html.Div(id="layout_content", children=[])
+
+#     dbc.Row([   #divise la page en 3 ligne : le titres / dropdown / derniers bar chart
+#         dbc.Col([  #divise les lignes en colonnes ici que le titre
+#             html.Div([
+
+#                 html.Img(
+#                     src='data:image/png;base64,{}'.format(encoded_image_ava.decode()),
+#                     height = "60px"
+#                 ),
+#             ]), 
+#         ], width=1),
+ 
+#         dbc.Col([
+#             dbc.Row([
+#                 dbc.Col([
+#                     html.H4(adress_curent_def, className='modal-title ')
+#                 ],className="py-1 "),  
+#             ]), #parametre du text w/ bootstrap   df. bootstrap cheatsheet  
+#         ], className="card border-success ", width={'size':9, 'offset':1}),
+        
+#         dbc.Col([
+#             html.Button([
+#                 html.Img(
+#                     src='data:image/png;base64,{}'.format(encoded_image_button.decode()),
+#                     height = "50px"
+#                 ),
+#             ], className='btn btn-secondary')
+#         ],width=1), 
+#     ], className="m-2"),  
+
+#  #-------------- BODY --------------#
+
+#     #-------------- TOP --------------#
+#     dbc.Row([
+#         dbc.Col([
+#             dbc.Row([
+#                 dbc.Card([
+#                     html.H3("Overall"),
+#                     html.H4(total_def),html.H4("$")
+#                 ], className='card border-light mb-3 py-5 text-md-center'),
+#             ],style={"height": "50%"}),
+#         ], width=2),
+
+#         dbc.Col([
+#             dbc.Card([
+#                 dbc.CardHeader([
+                    
+#                     html.H4("Balance"),
+#                     dcc.Dropdown(id='dropdown_details',
+#                         multi=False, #peut choisir qu'une seule valeur
+#                         value=default_name_def, #valeur par defaut 
+#                         options=[{'label':x, 'value':x} 
+#                                     for x in sorted(wallet_def['Name'].unique())] #choisis les valeurs selon la colonne Name : .unique() prends que les valeurs 1 fois sans duplicats
+#                         ),
+#                 ]),
+ 
+#                 dbc.CardBody(id='details_output')
+               
+#             ],style={"height": "100%"}, className='card border-light'),   
+#         ], className  ='mb-3'),
+
+#         dbc.Col([
+#             dbc.Card([
+#                 dbc.CardHeader([
+#                     html.H4("Token Price"),
+
+#                     dcc.Dropdown(id='dropdown_temps_reel', 
+#                         multi=False, #peut choisir qu'une seule valeur
+#                         value="bitcoin", #valeur par defaut 
+#                         options=["bitcoin","ethereum","cardano"] #choisis les valeurs selon la colonne Name : .unique() prends que les valeurs 1 fois sans duplicats
+#                         ),
+#                 ]),
+
+#                 dbc.CardBody(id="temps_reel_output"),
+
+#             ],style={"height": "100%"}, className='card border-light'),   
+#         ],className="mb-3"),
+#     ]),
+
+#     #-------------- BOTTOM --------------#   
+#     dcc.Store (id="wallet_list", data=[]),
+#     dbc.Row([
+#         dbc.Col([
+#             dbc.Row([
+#                 dbc.Card([
+#                     dbc.CardHeader("Your Address : " ),
+#                     dbc.CardBody([
+#                         dcc.Location(id="url_wallet"),
+#                         dbc.Nav(id='list_wallet', children = [], vertical=True),])
+#                     ],className='card border-secondary mb-3 ') 
+#             ],className="mb-3"),
+#             # dbc.Row(id="add_wallet"),
+#             dbc.Row([
+#                 html.Button("Add a wallet + ", id="open", className="btn btn-secondary"),
+#             ]),
+
+#             dbc.Modal([
+#                 dbc.ModalHeader("Add another wallet"),
+#                 dbc.ModalBody(
+#                     dbc.Form(
+#                         [
+#                             dbc.CardGroup(
+#                                 [
+#                                     html.H5("Network", className="mr-2 mb-3"),
+#                                     dcc.Dropdown(id='dropdown_blockchain', 
+#                                         multi=False, #peut choisir plusieurs valeurs
+#                                         value="ethereum - 1",
+#                                         options=["Ethereum - 1"," Binance Smart Chain - 56", "Matic Testnet Mumbai - 8001", "RSK Testnet - 31", "Moonbeam Moonbase Alpha - 1287", "Fantom Opera - 250"],
+#                                         placeholder="Select the blockchain",
+#                                         style={"width": "550px", "color" :"black"},
+#                                         className="mt-3 mb-3 "
+#                                     ),
+#                                 ],className="mr-3 mb-3" ),
+#                             dbc.CardGroup(
+#                                 [
+#                                     html.H5("Address", className="mr-2 mb-1"),
+#                                     dbc.Input(type="text", placeholder="Enter your address", id="text_address"),
+#                                 ], className="mr-3 mb-3"),
+
+#                             dbc.Button("Enter", className=" btn btn-primary text-center", id="enter", n_clicks=0),
+#                         ],
+#                         # inline=True,
+#                     )),
+#                 dbc.ModalFooter(
+#                     dbc.Button("Close", id="close", className="btn btn-secondary ml-auto")
+#                 ),
+
+#             ],
+#                 id="modal",
+#                 is_open=False,    # True, False
+#                 size="xl",        # "sm", "lg", "xl"
+#                 backdrop=True,    # True, False or Static for modal to not be closed by clicking on backdrop
+#                 scrollable=True,  # False or True if modal has a lot of text
+#                 # centered=True,    # True, False
+#                 fade=True         # True, False
+#             ),
     
 
  
-        ],width=2), #style={"height": "100%"}
+#         ],width=2), #style={"height": "100%"}
 
-        dbc.Col([
-            dbc.Card([
-                dbc.CardHeader([
-                    dcc.Location(id="url"),
-                    dbc.Nav([
-                        dbc.NavLink("Global View", href="/" ,active="exact"),
-                        dbc.NavLink("Transactions", href="/transactions", active ="exact")
-                    ]),
-                ]),
+#         # dbc.Col([
+#         #     dbc.Card([
+#         #         dbc.CardHeader([
+#         #             dcc.Location(id="url"),
+#         #             dbc.Nav([
+#         #                 dbc.NavLink("Global View", href="/" ,active="exact"),
+#         #                 dbc.NavLink("Transactions", href="/transactions", active ="exact")
+#         #             ]),
+#         #         ]),
 
-                dbc.CardBody(id="page-content")
+#         #         dbc.CardBody(id="page-content")
 
-            ])
-        ], width = 10),
-    ]),
+#         #     ])
+#         # ], width = 10),
+#     ]),
 
  #-------------- FOOTER --------------#    
 ],fluid = True) #permet d'étirer à la largeur de la page web    
@@ -248,22 +327,132 @@ app.layout= dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
 
  #-------------- Add wallet Callback --------------# 
 
-
 @app.callback(
-    [Output("list_wallet","children"),Output("wallet_list","data")],
+    Output("wallet_list","data"),
     [Input("dropdown_blockchain","value"), Input("text_address","value"), Input("enter","n_clicks") ]
 )
-def update_liste_wallet(value1, value2, n_clicks):
-    list =[]
+def update_storage_wallet(value1, value2, n_clicks) :
     liste_wallet =[]
     store = "{}-{}".format(value2, value1)
     for i in range(0, n_clicks):
         liste_wallet.append(store)
-    for i in range(len(liste_wallet)) :  
+    return liste_wallet
+
+@app.callback(
+    Output("list_wallet","children"),
+    Input("wallet_list","data")
+)
+def update_liste_wallet(data):
+    list =[]
+    for i in range(len(data)) :  
         list.append(
-            dbc.Button("wallet {}".format(i+1),id = "button {}".format(i+1), className="btn btn-outline-light mb-3", style={"background-color":"transparent"}))
+            dbc.NavLink(data[i], href="/{}".format(data[i])))
             
-    return list, liste_wallet
+    return list 
+    
+@app.callback(
+    [Output("layout_content","children"), Output("wallet_info","data")],
+    [Input("url_wallet","pathname"), Input("wallet_list","data")]
+) 
+
+def update_layout(pathname, data):
+    print(data)
+    print(pathname)
+    print(data[0])
+    if pathname=="/{}".format(data[0]) :
+        print('ouii')
+        print(type(pathname))
+        adress_curent = pathname.split('-')[0].rpartition('/')[2],
+        print("address",adress_curent)
+        blockchain = int(pathname.split('-')[2])
+        print(type(int(blockchain)))
+        
+        # default_transaction=transaction(adress_curent, blockchain),
+        wallet_df,total=wallet(adress_curent, blockchain),
+        print(wallet_df)
+        default_name=wallet['Name'].head(1),
+        # wallet_history = wallet_history(adress_curent, blockchain),
+        # history = px.line(wallet_history, x='Date', y='Holdings (en USD)'),
+        return [ "oui"
+            
+    #         dbc.Col([
+    #             dbc.Row([
+    #                 dbc.Col([
+    #                     html.H4(adress_curent, className='modal-title ')
+    #                 ],className="py-1 "),  
+    #             ]), #parametre du text w/ bootstrap   df. bootstrap cheatsheet  
+    #         ], className="card border-success ", width={'size':9, 'offset':1}),
+                
+    #         dbc.Row([
+    #             dbc.Col([
+    #                 dbc.Row([
+    #                     dbc.Card([
+    #                         html.H3("Overall"),
+    #                         html.H4(total),html.H4("$")
+    #                     ], className='card border-light mb-3 py-5 text-md-center'),
+    #                 ],style={"height": "50%"}),
+    #             ], width=2),
+
+    #             dbc.Col([
+    #                 dbc.Card([
+    #                     dbc.CardHeader([
+                            
+    #                         html.H4("Balance"),
+    #                         dcc.Dropdown(id='dropdown_details',
+    #                             multi=False, #peut choisir qu'une seule valeur
+    #                             value=default_name, #valeur par defaut 
+    #                             options=[{'label':x, 'value':x} 
+    #                                         for x in sorted(wallet['Name'].unique())] #choisis les valeurs selon la colonne Name : .unique() prends que les valeurs 1 fois sans duplicats
+    #                             ),
+    #                     ]),
+        
+    #                     dbc.CardBody(id='details_output')
+                    
+    #                 ],style={"height": "100%"}, className='card border-light'),   
+    #             ], className  ='mb-3'),
+
+    #             dbc.Col([
+    #                 dbc.Card([
+    #                     dbc.CardHeader([
+    #                         html.H4("Token Price"),
+
+    #                         dcc.Dropdown(id='dropdown_temps_reel', 
+    #                             multi=False, #peut choisir qu'une seule valeur
+    #                             value="bitcoin", #valeur par defaut 
+    #                             options=["bitcoin","ethereum","cardano"] #choisis les valeurs selon la colonne Name : .unique() prends que les valeurs 1 fois sans duplicats
+    #                             ),
+    #                     ]),
+
+    #                     dbc.CardBody(id="temps_reel_output"),
+
+    #             ],style={"height": "100%"}, className='card border-light'),   
+    #         ],className="mb-3"),
+        
+
+    # #-------------- BOTTOM --------------#   
+    #     dbc.Col([
+    #         dbc.Card([
+    #             dbc.CardHeader([
+    #                 dcc.Location(id="url"),
+    #                 dbc.Nav([
+    #                     dbc.NavLink("Global View", href=pathname+"/global",active="exact"),
+    #                     dbc.NavLink("Transactions", href=pathname+"/transactions", active ="exact")
+    #                 ]),
+    #             ]),
+
+    #             dbc.CardBody(id="page-content")
+
+    #         ])
+    #     ], width = 10), 
+        
+
+    # ]),
+
+        
+    ]
+
+
+
 
 # @app.callback (
 #     Output(),
@@ -423,13 +612,17 @@ def update_output_temps_reel(value_slctd):
 
 
  #-------------- NavBar Callback --------------#    
+
+
+
 @app.callback(
 
     Output("page-content", "children"),
-    [Input("url","pathname")]
+    [Input("url","pathname"), ]
 )
 
-def render_page_content(pathname):
+def render_page_content(pathname, pathname_wallet, data):
+   
     if pathname=="/" :
         return [
 
@@ -468,7 +661,7 @@ def render_page_content(pathname):
 
             dbc.Row([
                 dbc.Col([
-                   dbc.Card([
+                dbc.Card([
                         dbc.CardHeader([
                             html.H4("Your token"), 
 
@@ -527,16 +720,17 @@ def render_page_content(pathname):
                                 
                                 fixed_rows={'headers': True},
                             )  , 
-                           
-                          
-                         
+                        
+                        
+                        
                         ], className="table table-hover"), 
 
                     ],  className='card border-light mb-3'),
                 ])
             ])
         ]
-        
+
+
 
 @app.callback(
     Output('donut', 'figure'),
