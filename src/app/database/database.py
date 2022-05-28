@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, request, jsonify, Response
 import numpy as np
 
+
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://yeplwxjlhbauvi:48668289ae0c54004d2e532014cdcf6a2e9d34b4b63b74f0c35801b6b6bdc7dd@ec2-54-228-125-183.eu-west-1.compute.amazonaws.com:5432/d5e834h92a2de1"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -83,20 +84,21 @@ def portefolio_by_user(email, password):
         user = {
             "id": result_user.id,
             "email": result_user.email,
+            "password": result_user.password,
             "portefolios": result_user.portefolios
             }
         portefolios = []
         for i in user['portefolios']:
             result_portefolio = [i.wallet, i.chain_id]
             portefolios.append(result_portefolio)
-        return(portefolios)
+        return(portefolios, user["email"], user["password"])
     else:
-        return("Wrong password")
+        return('',email, password)
 
 
 if __name__ == "__main__":
     # db.drop_all()
     # db.create_all()
     # create_user("victor.bonnaf@gmail.com", "victor")  
-    # add_wallet("victor.bonnaf@gmail.com", "ZREWTXRYCVYIHUJOIP", 4567)
-    print(portefolio_by_user("victor.bonnaf@gmail.com", "victor"))
+    add_wallet("victor.bonnaf@gmail.com", "0x39C26c5Ea9fC05839eFe0e55b462EB442518E871", 56)
+    # print(portefolio_by_user("victor.bonnaf@gmail.com", "victor"))

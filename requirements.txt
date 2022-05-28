@@ -1,7 +1,5 @@
 absl-py==1.0.0
 appdirs==1.4.4
-conda==4.10.3
-conda-build==3.21.5
 cycler==0.11.0
 cytoolz==0.11.0
 daal4py==2021.3.0
@@ -23,8 +21,7 @@ Flask==2.1.2
 Flask-Compress==1.12
 Flask-Login==0.6.1
 gunicorn==20.1.0
-Flask-SQLAlchemy==2.5.1
-flask_sqlalchemy
+flask_sqlalchemy==2.1
 fonttools==4.32.0
 idna==3.3
 jedi==0.18.1
@@ -39,9 +36,6 @@ psycopg2==2.9.3
 pycodestyle==2.8.0
 pycoingecko==2.2.0
 pycosat==0.6.3
-pycurl==7.44.1
-pyflakes==2.4.0
-PyQt5==5.15.4
 pytest==6.2.4
 pytz==2022.1
 PyYAML==6.0
