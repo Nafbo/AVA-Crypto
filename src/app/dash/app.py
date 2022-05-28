@@ -932,7 +932,7 @@ def display_page(pathname):
 # ----------------------------- RUN APP ------------------------------------------------ >
 
 def launch_app():
-    return app.run_server(debug=False)  *
+    return app.run_server(debug=False) 
 
 
 # if __name__=='__main__':
