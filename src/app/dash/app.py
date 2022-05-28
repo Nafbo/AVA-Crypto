@@ -1,9 +1,8 @@
-# -----------------------------------IMPORT --------------------------------- >
-
+# -----IMPORT -----------------------------------------------------
 from tracemalloc import stop
 import dash
-
 from dash import dcc
+# import dash_core_components as dcc
 from dash import html
 from dash.dependencies import Output, Input, State
 import dash_bootstrap_components as dbc
@@ -12,35 +11,32 @@ import pandas as pd
 import base64
 import plotly.graph_objs as go
 from dash import Dash, dash_table
-import dash_core_components as dcc
 import flask
 from flask_login import LoginManager,UserMixin, current_user
 import os
 
-# -------------------- LIAISON AVEC LES FEATURES -------------------------------- >
+# ------- LINK WITH FEATURES --------------------------------------------------------
 
 from src.app.feature_wallet.wallet import wallet
 from src.app.feature_history.wallet_history import wallet_history
 from src.app.feature_price.price import price
 from src.app.feature_transaction.transaction import transaction
 
-# ------------------------ INITIALISATION DATA ------------------------------------- >
 
-default_transactionn=transaction("0xdB24106BfAA506bEfb1806462332317d638B2d82", 1)
+# ------- DATA INITILISATION --------------------------------------------------------
 
-
-adress_curent = "0xCBD6832Ebc203e49E2B771897067fce3c58575ac"
+adress_curent = "0xdB24106BfAA506bEfb1806462332317d638B2d82"
 blockchain = 1
+
+default_transaction=transaction(adress_curent, blockchain)
+
 wallet,total=wallet(adress_curent, blockchain)
 default_name=wallet['Name'].head(1)
 
 wallet_history = wallet_history(adress_curent, blockchain)
 history = px.line(wallet_history, x='Date', y='Holdings (en USD)')
 
-
-
-# ----------------------------- AJOUT IMAGES ------------------------------------- >
-
+ #-------------- add images --------------#
 
 image_ava_filename = 'src/app/dash/ressources/AVA_logo.png'
 encoded_image_ava = base64.b64encode(open(image_ava_filename, 'rb').read()) 
@@ -51,50 +47,51 @@ encoded_image_plus = base64.b64encode(open(image_plus_filename, 'rb').read())
 image_moins_filename = 'src/app/dash/ressources/minus.png'
 encoded_image_moins = base64.b64encode(open(image_moins_filename, 'rb').read()) 
 
+ethereum_logo = 'src/app/dash/ressources/ethereum_logo.png'
+encoded_image_ethereum = base64.b64encode(open(ethereum_logo, 'rb').read())
+
+bitcoin_logo = 'src/app/dash/ressources/bitcoin_logo.png'
+encoded_image_bitcoin = base64.b64encode(open(bitcoin_logo, 'rb').read())
+
+cardano_logo = 'src/app/dash/ressources/cardano_logo.png'
+encoded_image_cardano = base64.b64encode(open(cardano_logo, 'rb').read())
 
 button_filename = 'src/app/dash/ressources/AVA_button.png'
 encoded_image_button = base64.b64encode(open(button_filename, 'rb').read())
 
-bitcoin_filename= 'src/app/dash/ressources/RESEAUXSOCIAUX.png'
-encoded_image_bitcoin = base64.b64encode(open(bitcoin_filename, 'rb').read())
+reseaux_filename= 'src/app/dash/ressources/RESEAUXSOCIAUX.png'
+encoded_image_reseaux = base64.b64encode(open(reseaux_filename, 'rb').read())
 
 
+# ------- APP -----------------------------------------------------------
 
-# ------------------------------- APP FLASK ------------------------------------- >
-
-# app=dash.Dash(__name__, external_stylesheets=[dbc.themes.QUARTZ],  #dbc.themes.ZEPHIR
-#             meta_tags=[{'name': 'viewport',       # permet à l'app d'être responsive pour téléphone  
-#                      'content': 'width=device-width, initial-scale=1.0'}]
-                     
-#             )
-
-
-#On expose le serveur Flask pour permettre de le configurer pour l'ouverture de session
-
+ #-------------- app Flask --------------#
 
 server = flask.Flask(__name__)
 
 app = dash.Dash(__name__, server=server,
-                title='AVA CRYPTO',
+                title='AVA crypto',
                 update_title='Loading...',
                 suppress_callback_exceptions=True,
-                external_stylesheets=[dbc.themes.QUARTZ],  #dbc.themes.ZEPHIR
-                meta_tags=[{'name': 'viewport',       # permet à l'app d'être responsive pour téléphone  
+                external_stylesheets=[dbc.themes.QUARTZ],
+                meta_tags=[{'name': 'viewport',         
                      'content': 'width=device-width, initial-scale=1.0'}])
 
 
 # Mise à jour de la configuration du serveur Flask avec la clé secrète pour chiffrer le cookie de session de l'utilisateur.
-
 app.secret_key=SECRET_KEY=os.getenv('SECRET_KEY')
 
-# --------------------------- LAYOUT ----------------------------------------- >
 
-app.layout= dbc.Container([#dbc.Container mieux que html.div pour bootstrap
+# ------- LAYOUT --------------------------------------------------------
+
+ #-------------- First page --------------#
+
+app.layout= dbc.Container([
     dcc.Location(id='url', refresh=False),
     dcc.Location(id='redirect', refresh=True),
     dcc.Store(id='login-status', storage_type='session'),
-    html.Div(id='user-status-div',style={'textAlign': 'right'}),
-    html.Div(id='page-content',style={'textAlign': 'right'}),
+    html.Div(id='user-status-div',),
+    html.Div(id='page-content',),
 ],fluid = True)
 
 
@@ -109,274 +106,474 @@ def login_status(url):
         return dcc.Link('', href='/login',style={'textAlign': 'center'}), 'loggedout'
 
 
+index_page = dbc.Container([
+        html.Br(),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+        html.Br(),
 
-# --------------------------- PREMIERE PAGE  ----------------------------------------- >
+        dbc.Row([
+            
+                html.Div([
 
-index_page = html.Div([
-            html.Br(),
-            html.Br(),
-            html.Br(),
-            html.Br(),
-            html.Br(),
-            html.Br(),
-            html.Br(),
-            dbc.Row([
+                            html.Img(
+                                src='data:image/png;base64,{}'.format(encoded_image_ava.decode()),
+                                height = "100%"
+                            ),
+                        ], style={'textAlign': 'center'}), 
                 
-                    html.Div([
+        ], className="mb-4"),
 
-                                html.Img(
-                                    src='data:image/png;base64,{}'.format(encoded_image_ava.decode()),
-                                    height = "100%"
-                                ),
-                            ], style={'textAlign': 'center'}), 
-                    
-            ]),
-            html.Br(),
-            dbc.Row([
-     
-                    
-                    html.Div([
-                        html.Header("Bienvenue sur AVACRYPTO, Votre dashboard facile d'utilisation pour avoir une vue globale de vos cryptomonnaies")
-                        
-                    ],style={'textAlign': 'center'})
-                    
-      
-            ]),
-            html.Br(),
-            dbc.Row([
-     
-                    
-                    html.Div([
-                        html.H3("Le monde de la cryptomonnaie n'attend plus que vous !")
-                        
-                    ],style={'textAlign': 'center'})
-                    
-      
-            ]),
-            html.Br(),
-            html.Div([
-            
-            dcc.Link('Accéder à l\'application', href='/login')],style={'textAlign': 'center'}) ,
+        html.Br(),
 
-            html.Br(),
-            html.Br(),
-            html.Br(),
-            
-            
+        dbc.Row([
+                html.Div([
+                    html.H3("Welcome to AVA crypto, the easy-to-use dashboard that allows you to have a global view of yours cryptocurrencies ")
+                    
+                ],style={'textAlign': 'center'})
+                
+
+        ],className="mb-3"),
+
+        dbc.Row([
+                html.Div([
+                    html.H4("The world of cryptocurrencies is waiting for you !")
+                    
+                ],style={'textAlign': 'center'})
+        ],className="mb-3"),
+
+        dbc.Row([
+            dbc.Col([   
+                dbc.Card([
+                    dbc.NavLink('Click here to access the app !', href='/login',style={'textAlign': 'center'}) ,
+                ], className="mb-2" ),
+            ], width={'size':2, 'offset':5},),
+        ], className="mb-5"),
+
+        html.Br(),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+        html.Br(),
+
+        html.Div([
+        
+            html.Img(
+                    src='data:image/png;base64,{}'.format(encoded_image_reseaux.decode()),
+                    height = "100%"
+                )],style={'textAlign': 'center'})   
+                        
+                
+
+],fluid = True)
+
+ #-------------- Second page --------------#
+
+page_2_layout = dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
+
+    #-------------- HEADER --------------#
+
+    dcc.Store(id="store_current_address"),
+    dcc.Store(id="store_current_blockchain"),
+    dcc.Store(id="store_wallet_all"),
+
+    dbc.Row([   #divise la page en 3 ligne : le titres / dropdown / derniers bar chart
+        dbc.Col([  #divise les lignes en colonnes ici que le titre
             html.Div([
-            
+
                 html.Img(
-                        src='data:image/png;base64,{}'.format(encoded_image_bitcoin.decode()),
-                        height = "100%"
-                    )],style={'textAlign': 'center'})   
-                            
-                
-            ])
-
-
-
-
-# --------------------------- DEUXIEME PAGE ----------------------------------------- >
-
-page_2_layout = html.Div([
-        
-                
-            dbc.Row([   #divise la page en 3 ligne : le titres / dropdown / derniers bar chart
-                dbc.Col([  #divise les lignes en colonnes ici que le titre  
-                    html.Div([
-
-                        html.Img(
-                            src='data:image/png;base64,{}'.format(encoded_image_ava.decode()),
-                            height = "60px"
-                        ),
-                    ]), 
-                ], width=1),
-        
-                dbc.Col([
-                    dbc.Row([
-                        dbc.Col([
-                            html.Div(
-                                dcc.Dropdown([1,2,3])
-                                , className="dropdown-menu"),
-                        ], width =2),
-                        dbc.Col([
-                            html.H4(adress_curent,
-                            className='modal-title')
-                        ]),  
-                    ]), #parametre du text w/ bootstrap   df. bootstrap cheatsheet  
-                ], className="card border-success", width={'size':9, 'offset':1}),
-                
-                dbc.Col([
-                    dcc.Location(id='url_log', refresh=True),
-                    html.Button([
-                        html.Img(
-                            src='data:image/png;base64,{}'.format(encoded_image_button.decode()),
-                            height = "50px",
-                            
-                        ),
-                        
-                    ],n_clicks=0,type='submit', id='logout_img', className='btn btn-secondary'),
-                ],width=1), 
-
-            ], className="m-2"),  
-
+                    src='data:image/png;base64,{}'.format(encoded_image_ava.decode()),
+                    height = "60px"
+                ),
+            ]), 
+        ], width=1),
+ 
+        dbc.Col([
             dbc.Row([
                 dbc.Col([
+                    html.H4(adress_curent, className='modal-title ')
+                ],className="py-1 "),  
+            ]), #parametre du text w/ bootstrap   df. bootstrap cheatsheet  
+        ], className="card border-success ", width={'size':9, 'offset':1}),
+        
+        dbc.Col([
+            dcc.Location(id='url_log', refresh=True),
+            html.Button([
+                html.Img(
+                    src='data:image/png;base64,{}'.format(encoded_image_button.decode()),
+                    height = "50px",
+                    
+                ),
+                
+            ],n_clicks=0,type='submit', id='logout_img', className='btn btn-secondary'),
+        ],width=1),  
+    ], className="m-2"),  
 
-                    dbc.Row([
-                        dbc.Card([
-                            html.H3("Overall"),
-                            html.H4(total),html.H4("$")
-                        ], className='card border-light mb-3 py-5 text-md-center'),
-                    ],style={"height": "50%"}),
-                ], width=2),
+    #-------------- BODY --------------#
 
+    dbc.Row([
+        dbc.Col([
+            dbc.Row([
+                dbc.Card([
+                    html.H3("Overall"),
+                    html.H4(total),html.H4("$")
+                ], className='card border-light mb-3 py-5 text-md-center'),
+            ],style={"height": "50%"}),
+        ], width=2),
+
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader([
+                    
+                    html.H4("Balance"),
+                    dcc.Dropdown(id='dropdown_details',
+                        multi=False, #peut choisir qu'une seule valeur
+                        value=default_name, #valeur par defaut 
+                        options=[{'label':x, 'value':x} 
+                                    for x in sorted(wallet['Name'].unique())] #choisis les valeurs selon la colonne Name : .unique() prends que les valeurs 1 fois sans duplicats
+                        ),
+                ]),
+ 
+                dbc.CardBody(html.Div(id='details_output'))
+               
+            ],style={"height": "100%"}, className='card border-light'),   
+        ], className  ='mb-3'),
+
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader([
+                    html.H4("Token Price"),
+
+                    dcc.Dropdown(id='dropdown_temps_reel', 
+                        multi=False, #peut choisir qu'une seule valeur
+                        value="bitcoin", #valeur par defaut 
+                        options=["bitcoin","ethereum","cardano"] #choisis les valeurs selon la colonne Name : .unique() prends que les valeurs 1 fois sans duplicats
+                        ),
+                ]),
+
+                dbc.CardBody(id="temps_reel_output"),
+
+            ],style={"height": "100%"}, className='card border-light'),   
+        ],className="mb-3"),
+    ]),
+ 
+    dcc.Store (id="wallet_list", data=[]),
+    dbc.Row([
+        dbc.Col([
+            dbc.Row([
+                dbc.Card([ 
+                    dbc.CardHeader("Your Address :"),
+                    dbc.CardBody([
+                        dcc.Location(id="url_wallet"),
+                        dbc.Nav(id='list_wallet', children = [], vertical=True),])
+                    ]) 
+              
+            ],className="mb-3"),
+
+            dbc.Row([
+                html.Button("Add a wallet + ", id="open", className="btn btn-secondary"),
+            ]),
+
+            dbc.Modal([
+                dbc.ModalHeader("Add another wallet"),
+                dbc.ModalBody(
+                    dbc.Form(
+                        [
+                            dbc.CardGroup(
+                                [
+                                    html.H5("Network", className="mr-2 mb-3"),
+                                    dcc.Dropdown(id='dropdown_blockchain', 
+                                        multi=False, #peut choisir plusieurs valeurs
+                                        value="ethereum - 1",
+                                        options=["Ethereum - 1"," Binance Smart Chain - 56", "Matic Testnet Mumbai - 8001", "RSK Testnet - 31", "Moonbeam Moonbase Alpha - 1287", "Fantom Opera - 250"],
+                                        placeholder="Select the blockchain",
+                                        style={"width": "550px", "color" :"black"},
+                                        className="mt-3 mb-3 "
+                                    ),
+                                ],className="mr-3 mb-3" ),
+                            dbc.CardGroup(
+                                [
+                                    html.H5("Address", className="mr-2 mb-1"),
+                                    dbc.Input(type="text", placeholder="Enter your address", id="text_address"),
+                                ], className="mr-3 mb-3"),
+
+                            dbc.Button("Enter", className=" btn btn-primary text-center", id="enter", n_clicks=0),
+                        ],
+                        # inline=True,
+                    )),
+                dbc.ModalFooter(
+                    dbc.Button("Close", id="close", className="btn btn-secondary ml-auto")
+                ),
+
+            ],
+                id="modal",
+                is_open=False,    # True, False
+                size="xl",        # "sm", "lg", "xl"
+                backdrop=True,    # True, False or Static for modal to not be closed by clicking on backdrop
+                scrollable=True,  # False or True if modal has a lot of text
+                # centered=True,    # True, False
+                fade=True         # True, False
+            ),
+    
+
+ 
+        ],width=2), 
+
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader([
+                    dcc.Location(id="url_details"),
+                    dbc.Nav([
+                        dbc.NavLink("Global View", href="/page-2" ,active="exact"),
+                        dbc.NavLink("Transactions", href="/page-2/transactions", active ="exact")
+                    ]),
+                ]),
+
+                dbc.CardBody(id="page-content-details")
+
+            ])
+        ], width = 10),
+    ]),
+
+ #-------------- FOOTER --------------#    
+],fluid = True) #permet d'étirer à la largeur de la page web    
+
+
+
+# ------- CALLBACK -------------------------------------------------------
+
+ #-------------- Add wallet Callback --------------# 
+
+@app.callback(Output('url_log', 'pathname'), 
+              Input('logout_img', 'n_clicks'))
+
+def logout_button_clickk(n_clicks):
+    if n_clicks > 0:
+        return '/login' 
+
+@app.callback(
+    [Output("list_wallet","children"),Output("wallet_list","data")],
+    [Input("dropdown_blockchain","value"), Input("text_address","value"), Input("enter","n_clicks") ]
+)
+def update_liste_wallet(value1, value2, n_clicks):
+    list =[]
+    liste_wallet =[]
+    store = "{}-{}".format(value2, value1)
+    for i in range(0, n_clicks):
+        liste_wallet.append(store)
+    for i in range(len(liste_wallet)) :  
+        list.append(
+            dbc.Button("wallet {}".format(i+1),id = "button {}".format(i+1), className="btn btn-outline-light mb-3", style={"background-color":"transparent"}))
+            
+    return list, liste_wallet
+
+@app.callback(
+    Output("modal", "is_open"),
+    [Input("open", "n_clicks"), Input("close", "n_clicks")],
+    [State("modal", "is_open")],
+)
+def toggle_modal(n1, n2, is_open):
+    if n1 or n2 :
+        return not is_open
+    return is_open
+
+# Stock variable
+
+@app.callback(
+    Output("store_wallet_all", "data"),
+    [Input("dropdown_blockchain","value"), Input("text_address","value") ]
+)
+
+def update_store_wallet_all(value_drop, value_text) :
+    return value_drop, value_text
+
+@app.callback(
+    Output ("store_current_blockchain", "data"),
+    [Input("dropdown_blockchain","value")]
+)
+
+def update_adress(value) :
+        number_chain = value.rpartition('-')[2]
+        return int(number_chain)
+
+@app.callback(
+    Output ("store_current_address", "data"),
+    [Input("text_address","value")]
+)
+
+def update_adress(value) :
+        return value
+    
+# Variable ds fct
+
+@app.callback(
+    Output("current_address", "children"),
+    Input("store_current_address", "data")
+)
+
+def update_current_wallet (data):
+    return '{}'.format(data)
+
+# Ajoute Wallet
+@app.callback(
+     Output("add_wallet", "children"),
+    Input("enter", "n_clicks")
+)
+
+def upade_add_block_wallet(n) :
+    if n :
+        return [
+            html.Button([
+                        html.P(id="wallet_n")
+            ], className='btn btn-secondary mb-3'),
+        ]
+
+@app.callback(
+    Output("wallet_n", "children"),
+    Input("store_wallet_all", "data")
+)
+
+def update_add_wallet(n):
+    return "{} , {}".format(n[1],n[0])
+    
+
+# Balance : details_crypto
+@app.callback(
+    Output("details_output", "children"),
+    Input('dropdown_details', 'value')
+)
+def update_output_details(value_slctd):
+    dff = wallet[wallet['Name']==value_slctd]
+    balance = "{}".format(dff['Balance']).split('\n',1)[0].split('    ',1)[1]
+    holdings = "{}".format(dff['Holdings (en USD)']).split('\n',1)[0].split('    ',1)[1]
+    profit = "{}".format(dff['Profit/Loss']).split('\n',1)[0].split('    ',1)[1]
+   
+    return [
+        dbc.Row([
+            html.H5("Balance : {}".format(balance))
+            ], className=" text-md-center"),
+
+        dbc.Row([
+            html.H5("Holdings en USD : {}".format(holdings))
+        ],className=" text-md-center"),
+
+        dbc.Row([
+            html.H5("Profit/Loss : {}".format(profit))
+        ],className=" text-md-center"),
+    ]
+
+
+# Token Price : temps_reel_output
+@app.callback(
+    Output("temps_reel_output","children"),
+    Input("dropdown_temps_reel","value")
+)
+
+def update_output_temps_reel(value_slctd):
+    price_tps = price(value_slctd)
+    price_final =  price_tps[0]
+
+    if value_slctd == "bitcoin" :
+        image_logo = encoded_image_bitcoin
+    elif value_slctd == "ethereum" :
+        image_logo = encoded_image_ethereum
+    elif value_slctd == "cardano" :
+        image_logo = encoded_image_cardano
+
+    if price_final > 0 :
+        image_profit = encoded_image_plus
+    
+    elif price_final < 0 :
+        image_profit = encoded_image_moins
+
+    return [
+        dbc.Row([
+            dbc.Col([  
+                html.Div([
+                    html.Img(
+                        src='data:image/png;base64,{}'.format(image_logo.decode()),
+                        height = "80px"
+                     ),
+                ],style={'text-align': 'center'} )       
+                
+            ],width=4,className=" py-2"),
+
+        
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardBody([
+                        html.Div([
+                            html.H5(["Actual Price : {}".format(price_final)], className="text-center"),
+                        
+                            html.Img(
+                                src='data:image/png;base64,{}'.format(image_profit.decode()),
+                                className="img-fluid", )# height = "40px", )
+                    
+                        ], style={'text-align': 'center'})
+                    ]),
+                ],)
+            ],width = 7),  
+        ],className=" py-1")
+ 
+    ]
+
+
+ #-------------- NavBar Callback --------------#    
+@app.callback(
+
+    Output("page-content-details", "children"),
+    [Input("url_details","pathname")]
+)
+
+def render_page_content(pathname):
+    if pathname=="/page-2" :
+        return [
+
+            dbc.Row([
                 dbc.Col([
                     dbc.Card([
-                        dbc.CardHeader([
+                        dbc.CardHeader([ 
+                            html.H4("Your Token"),
                             dcc.Dropdown(id='dropdown_donut', 
                                 multi=True, #peut choisir plusieurs valeurs
                                 value=default_name,
                                 options=[{'label':x, 'value':x}
                                             for x in sorted(wallet['Name'].unique())],
-                            )
+                            ),
                         ]),
 
                         dbc.CardBody([
                             dcc.Graph(id='donut', figure={})
                         ]),
 
-                    ], className='card border-light mb-3'),   
-                ]),
-                    
-                dbc.Col([
-                    dbc.Card([
-                        dbc.CardHeader([
-                            "Wallet History"
-                        ]),
-
-                        dbc.CardBody([
-                            dcc.Graph(figure=history)
-                            
-                        ]),
-                    ], className='card border-light mb-3')
-                ],style={"height": "100%"})
-            ]),#justify : gère les espaces : start, center, end, between, around // pour que ça marche avoir des colonnes en "stock" ; justify='around'
-            
-            dbc.Row([
-                dbc.Col([
-                    dbc.Card([
-                            html.P("Adress Current Wallet : {}".format(adress_curent))
-                        ], className='card border-light mb-3 py-5 text-sm-center')
-                ],width=2),
+                    ],className="card border-light mb-3"),
+                ],width=6),
 
                 dbc.Col([
                     dbc.Card([
-                        dbc.CardHeader([
-                            
-                            html.H4("Token"),
-                            dcc.Dropdown(id='dropdown_details',
-                                multi=False, #peut choisir qu'une seule valeur
-                                value=default_name, #valeur par defaut 
-                                options=[{'label':x, 'value':x} 
-                                            for x in sorted(wallet['Name'].unique())] #choisis les valeurs selon la colonne Name : .unique() prends que les valeurs 1 fois sans duplicats
-                                ),
-                        ]),
-        
-                        dbc.CardBody(
-                            html.Div(id='details_output', children=[])
-                        )
-                    
-                    ],style={"height": "100%"}, className='card border-light'),   
-                ], className  ='mb-3'),
-
-                dbc.Col([
-                    dbc.Card([
-                        dbc.CardHeader([
-                            html.H4("Token Price"),
-
-                            dcc.Dropdown(id='dropdown_temps_reel',
-                                multi=False, #peut choisir qu'une seule valeur
-                                value=default_name, #valeur par defaut 
-                                options=["bitcoin","ethereum","cardano"] #choisis les valeurs selon la colonne Name : .unique() prends que les valeurs 1 fois sans duplicats
-                                ),
-                        ]),
-
-                        dbc.CardBody(
-                                
-                                html.Div([
-
-                                    html.Img(
-                                        src='data:image/png;base64,{}'.format(encoded_image_plus.decode()),
-                                        height = "60px"
-                                    ),
-                                ]), 
-                        ),
-
-                    ],style={"height": "100%"}, className='card border-light'),   
-                ],className="mb-3"),
-
-                dbc.Col([
-                    dbc.Card([
-                        dbc.CardHeader([
-                            html.H4("Transactions"),
-                        ]),
-
-                        dbc.CardBody([
-                            html.Div([
-                                dash_table.DataTable(
-                                    data=default_transactionn.to_dict('records'),
-                                    columns=[{'id': c, 'name': c} for c in default_transactionn.columns],
-                                    page_action='none',
-                                    style_table={'overflowY': 'auto','height': 400},
-                                    style_cell={
-                                        'height': 'auto',
-                                        #all three widths are needed
-                                        'minWidth': '180px', 'width': '180px', 'maxWidth': '180px',
-                                        'whiteSpace': 'normal'
-                                    },
-                                    style_header={
-                                        'backgroundColor': 'rgb(30, 30, 30)',
-                                        'border': '1px solid pink' ,
-                                        'fontWeight': 'bold'
-                                    },
-                                    style_data={
-                                        'width': '150px', 'minWidth': '150px', 'maxWidth': '150px',
-                                        'border': '1px solid blue' ,
-                                        #'textOverflow': 'ellipsis',
-                                        'backgroundColor': 'rgb(50, 50, 50)',
-                                        'color': 'white'
-                                    },
-                                    
-                                    fixed_rows={'headers': True},
-                                ),
-                            
+                            dbc.CardHeader([
+                                html.H4("Wallet History")
                             ]),
-                        
-                        ]), 
-                    ]),
-                    
-                ]), 
-            ]),      
+
+                            dbc.CardBody([
+                                dcc.Graph(figure=px.line(wallet_history, x='Date', y='Holdings (en USD)'))      
+                            ]),
+                    ], className="card border-light mb-3")
+                ],width=6),
+            ]),
 
             dbc.Row([
                 dbc.Col([
-                    dbc.Row([
-                        html.Button([
-                            html.H4("wallet 2")
-                        ], className='btn btn-secondary mb-3'),
-                    ], style={"height": "50%"}),
-
-                    dbc.Row([
-                        html.Button(
-                            html.H4("Add another wallet + "), id="add_wallet", n_clicks = 0, className='btn btn-secondary')
-                    ], style={"height": "50%"}),
-                ], width = 2),
-
-                dbc.Col([
-                    dbc.Card([
+                   dbc.Card([
                         dbc.CardHeader([
-                            html.H4("Selectionner vos cryptomonnaies"), 
+                            html.H4("Your token"), 
 
                             dcc.Checklist(id='checklist_bar',
                                 value=default_name,
@@ -390,22 +587,60 @@ page_2_layout = html.Div([
                             dcc.Graph(id='bar_chart', figure={}, style={"height": "95%"}),
                         ]),
                     ], className='card border-light'),
-                ],width=7),
-            ]),  
+                ]),
+            ]),
+
+
+        ]      
+
+    elif pathname=="/page-2/transactions" :
+
+        return [
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardHeader([
+                            html.H4("Transactions"),
+                        ]),
+
+                        dbc.CardBody([
+                            dash_table.DataTable(
+                                data=default_transaction.to_dict('records'),
+                                columns=[{'id': c, 'name': c} for c in default_transaction.columns],
+                                page_action='none',
+                                style_table={'overflowY': 'auto','height': 400},
+                                style_cell={
+                                    'height': 'auto',
+                                    'minWidth': '180px', 'width': '180px', 'maxWidth': '180px',
+                                    'whiteSpace': 'normal'
+                                },
+                                style_header={
+                                    'backgroundColor': 'hex(F8F8F8)',
+                                    'border': '1px solid pink' ,
+                                    'fontWeight': 'bold',
+                                    'color':'black'
+                                },
+                                style_data={
+                                    'width': '150px', 'minWidth': '150px', 'maxWidth': '150px',
+                                    # 'border': '1px solid blue' ,
+                                    'textOverflow': 'ellipsis',
+                                    'backgroundColor': 'rgba(255, 255, 255, 0)',
+                                    'color': 'black'
+                                },
+                                
+                                fixed_rows={'headers': True},
+                            )  , 
+                           
+                          
+                         
+                        ], className="table table-hover"), 
+
+                    ],  className='card border-light mb-3'),
+                ])
+            ])
+        ]
         
-        ])
 
-
-@app.callback(Output('url_log', 'pathname'), 
-              Input('logout_img', 'n_clicks'))
-
-def logout_button_clickk(n_clicks):
-    if n_clicks > 0:
-        return '/login' 
-
-
-
-# Balance - Donut
 @app.callback(
     Output('donut', 'figure'),
     Input('dropdown_donut', 'value')
@@ -425,48 +660,6 @@ def update_graph(value_slctd):
     wallet_slctd = wallet[wallet['Name'].isin(value_slctd)]
     fighist = px.histogram(wallet_slctd, x='Name', y='Balance', color="Name",  hover_name='Name')
     return fighist
-
-#Add wallet
-
-
-
-# details_crypto
-@app.callback(
-    Output("details_output", "children"),
-    Input('dropdown_details', 'value')
-)
-def update_output_details(value_slctd):
-    dff = wallet[wallet['Name']==value_slctd]
-    balance = "{}".format(dff['Balance']).split('\n',1)[0].split('    ',1)[1]
-    holdings = "{}".format(dff['Holdings (en USD)']).split('\n',1)[0].split('    ',1)[1]
-    profit = "{}".format(dff['Profit/Loss']).split('\n',1)[0].split('    ',1)[1]
-    return "Balance : ",balance,"\n"," Holdings (en USD) : ",holdings, "\n", "Profit/Loss : " , profit
-
-#temps_reel_output
-@app.callback(
-    Output("temps_reel_output","children"),
-    Input("dropdown_temps_reel","value")
-)
-
-def update_output_temps_reel(value_slctd):
-    price_tps = price(value_slctd)
-    return "Price : {}".format(price_tps[0])
-
-#temps_reel_couleur   
-@app.callback(
-    Output("temps_reel_couleur","children"),
-    Input("dropdown_temps_reel","value")
-)
-
-def update_output_temps_couleurs(value_slctd):
-    price_tps = price(value_slctd)
-    return "Price : {}".format(price_tps[0])
-
-
-
-
-
-
 
 # ------------LOGIN MANAGER de connexion sera utilisé pour connecter et déconnecter les utilisateurs --------------- >
 
@@ -491,42 +684,102 @@ def load_user(username):
 
 # --------------------------------------------- PAGE LOGIN ------------------------------------------------ >
 
-login = html.Div([
-                  html.Br(),
-                  html.Br(),
-                  html.Br(),
-                  html.Br(),
-                  html.Br(),
-                  html.Br(),
-                  html.Br(),
-                  html.Img(src='data:image/png;base64,{}'.format(encoded_image_ava.decode()),height = "100%"), 
-                  html.Br(),
-                  dcc.Location(id='url_login', refresh=True),
-                  html.Br(),
-                  html.H2('''Please log in to continue:''', id='h1'),
-                  html.Br(),
-                  dcc.Input(placeholder='Enter your username',
-                            type='text', id='uname-box'),
-                  dcc.Input(placeholder='Enter your password',
-                            type='password', id='pwd-box'),
-                  html.Button(children='Login', n_clicks=0,
-                              type='submit', id='login-button'),
-                  html.Div(children='', id='output-state'),
-                  html.Br(),
-                  dcc.Link('Register', href='/inscription'),
-                  html.Br(),
-                  html.Br(),
-                  dcc.Link('Home Page', href='/'),
-                  html.Br(),
-                  html.Br(),
-                  html.Br(),
-                  html.Div([
-                  html.Img(
-                        src='data:image/png;base64,{}'.format(encoded_image_bitcoin.decode()),
-                        height = "100%"
-                    )])  
-                  ],style={'textAlign': 'center'})
+login = dbc.Container([
+
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+
+    dbc.Row([
+        html.Div([
+
+            html.Img(
+                src='data:image/png;base64,{}'.format(encoded_image_ava.decode()),
+                height = "100%"
+            ),
+        ], style={'textAlign': 'center'}),   
+    ], className="mb-4"),
+
+            html.Br(),
+            dcc.Location(id='url_login', refresh=True),
+            html.Br(),
+    dbc.Row(
+        html.Div([
+                html.H3("Please log in to continue :", id='h1')
                 
+        ],style={'textAlign': 'center'})
+    ),
+           
+    html.Br(),
+    
+    dbc.Row([
+        html.Div([
+            dbc.Col([
+                dbc.Input(placeholder='Enter your username',
+                     type='text', id='uname-box', className="form-floating"),
+                html.Br(),
+                dbc.Input(placeholder='Enter your password',
+                    type='password', id='pwd-box', className="form-floating"),
+            ],  width={'size':4, "offset":4}),
+        ],style={'textAlign': 'center'})
+        
+    ], className="ml-3 mx-1 mb-3"),
+
+    dbc.Row([
+        html.Div([
+             html.Button(children='Login', n_clicks=0,
+                    type='submit', id='login-button', className="btn btn-light", style={'textAlign': 'center'}),
+        ], style={'textAlign': 'center'})
+    ], className ="mb-3"),
+       
+    dbc.Row([
+         html.Div(children='', id='output-state'),
+    ]),    
+   
+    html.Br(),
+    html.Br(),
+    html.Br(),
+
+
+    dbc.Row([
+        
+        dbc.Col([
+            dbc.Card([
+                dbc.NavLink('Register', href='/inscription', style={'textAlign': 'center'})
+            ],  className="mb-2" )
+        ], width={'size':2, "offset":4},),
+
+        dbc.Col([
+            dbc.Card([
+                dbc.NavLink('Home Page', href='/',style={'textAlign': 'center'})
+            ],  className="mb-2" )
+        ],width={'size':2},),
+    ]),
+
+            
+
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+
+    html.Div([
+    
+        html.Img(
+                src='data:image/png;base64,{}'.format(encoded_image_reseaux.decode()),
+                height = "100%"
+            )],style={'textAlign': 'center'})   
+],fluid = True)
+            
 
 @app.callback(
     Output('url_login', 'pathname'), Output('output-state', 'children'), [Input('login-button', 'n_clicks')], [State('uname-box', 'value'), State('pwd-box', 'value')])
@@ -575,7 +828,7 @@ inscription = html.Div([
                   html.Br(),
                   html.Div([
                   html.Img(
-                        src='data:image/png;base64,{}'.format(encoded_image_bitcoin.decode()),
+                        src='data:image/png;base64,{}'.format(encoded_image_reseaux.decode()),
                         height = "100%"
                     )])  
                   ],style={'textAlign': 'center'})
@@ -592,12 +845,7 @@ def logout_button_clickk(n_clicks, username, password, Password):
         
         else:
             return '/page-2' , ''
-    
-    
-    
-    
-    
-    
+        
     
 @app.callback(Output('page-content', 'children'), Output('redirect', 'pathname'),
               [Input('url', 'pathname')])
