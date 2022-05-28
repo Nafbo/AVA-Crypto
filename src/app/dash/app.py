@@ -265,6 +265,7 @@ page_2_layout = dbc.Container([    #dbc.Container mieux que html.div pour bootst
     ]),
  
     dcc.Store (id="wallet_list", data=[]),
+
     dbc.Row([
         dbc.Col([
             dbc.Row([
@@ -793,45 +794,102 @@ def login_button_click(n_clicks, username, password):
     
 
 inscription = html.Div([
-                  html.Br(),
-                  html.Br(),
-                  html.Br(),
-                  html.Br(),
-                  html.Br(),
-                  html.Br(),
-                  html.Br(),
-                  html.Img(src='data:image/png;base64,{}'.format(encoded_image_ava.decode()),height = "100%"), 
-                  html.Br(),
-                  dcc.Location(id='url_inscription', refresh=True),
-                  html.Br(),
-                  html.H2('''Register:''', id='h1'),
-                  html.Br(),
-                  dcc.Input(placeholder='Enter a new username',
-                            type='text', id='uname-box-2'),
-                  html.Br(),
-                  dcc.Input(placeholder='Enter a new password',
-                            type='password', id='pwd-box-2'),
-                  html.Br(),
-                  dcc.Input(placeholder='Confirm password',
-                            type="Password", id='pwd-box-3'),
-                  html.Br(),
-                  html.Button(children='Register', n_clicks=0,
-                              type='submit', id='login-button-2'),
-                  html.Div(children='', id='output-state-2'),
-                  html.Br(),
-                  dcc.Link('Login', href='/login'),
-                  html.Br(),
-                  html.Br(),
-                  dcc.Link('Home Page', href='/'),
-                  html.Br(),
-                  html.Br(),
-                  html.Br(),
-                  html.Div([
-                  html.Img(
-                        src='data:image/png;base64,{}'.format(encoded_image_reseaux.decode()),
-                        height = "100%"
-                    )])  
-                  ],style={'textAlign': 'center'})
+
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+
+    dbc.Row([
+        html.Div([
+
+            html.Img(
+                src='data:image/png;base64,{}'.format(encoded_image_ava.decode()),
+                height = "100%"
+            ),
+        ], style={'textAlign': 'center'}),   
+    ], className="mb-4"),
+
+
+    dcc.Location(id='url_inscription', refresh=True),
+
+    dbc.Row(
+        html.Div([
+                html.H3("Register:", id='h1')
+                
+        ],style={'textAlign': 'center'})
+    ),
+           
+    html.Br(),
+
+    dbc.Row([
+        html.Div([
+            dbc.Col([
+                dbc.Input(placeholder='Enter a new username',
+                            type='text', id='uname-box-2',className="form-floating"),
+                
+                html.Br(),
+
+                dbc.Input(placeholder='Enter a new password',
+                            type='password', id='pwd-box-2', className="form-floating"),
+                
+                html.Br(),
+
+                dcc.Input(placeholder='Confirm password',
+                            type="Password", id='pwd-box-3', className="form-floating"),
+            ],  width={'size':4, "offset":4}),
+        ],style={'textAlign': 'center'})
+        
+    ], className="ml-3 mx-1 mb-3"),
+                
+    dbc.Row([
+        html.Div([
+             html.Button(children='Register', n_clicks=0,
+                              type='submit', id='login-button-2', className="btn btn-light", style={'textAlign': 'center'}),
+        ], style={'textAlign': 'center'})
+    ], className ="mb-3"),             
+                 
+    dbc.Row([
+         html.Div(children='', id='output-state-2'),
+    ]),    
+
+    
+    dbc.Row([
+        
+        dbc.Col([
+            dbc.Card([
+                dbc.NavLink('Login', href='/login', style={'textAlign': 'center'})
+            ],  className="mb-2" )
+        ], width={'size':2, "offset":4},),
+
+        dbc.Col([
+            dbc.Card([
+                dbc.NavLink('Home Page', href='/',style={'textAlign': 'center'})
+            ],  className="mb-2" )
+        ],width={'size':2},),
+    ]),    
+
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+    html.Br(),
+
+    html.Div([
+    
+        html.Img(
+                src='data:image/png;base64,{}'.format(encoded_image_reseaux.decode()),
+                height = "100%"
+            )
+    ],style={'textAlign': 'center'})   
+])
 
 @app.callback(Output('url_inscription', 'pathname'),Output('output-state-2', 'children'), Input('login-button-2', 'n_clicks'),[State('uname-box-2', 'value'), State('pwd-box-2', 'value'),State('pwd-box-3', 'value')])
 
@@ -873,5 +931,11 @@ def display_page(pathname):
     
 # ----------------------------- RUN APP ------------------------------------------------ >
 
-def launch_app():
-    return app.run_server(debug=False)  
+# def launch_app():
+#     return app.run_server(debug=False)  *
+
+
+if __name__=='__main__':
+    app.run_server(debug=True)   
+
+
