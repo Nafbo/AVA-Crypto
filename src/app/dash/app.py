@@ -838,7 +838,7 @@ inscription = html.Div([
                 
                 html.Br(),
 
-                dcc.Input(placeholder='Confirm password',
+                dbc.Input(placeholder='Confirm password',
                             type="Password", id='pwd-box-3', className="form-floating"),
             ],  width={'size':4, "offset":4}),
         ],style={'textAlign': 'center'})
