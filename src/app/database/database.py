@@ -99,6 +99,6 @@ def portefolio_by_user(email, password):
 if __name__ == "__main__":
     # db.drop_all()
     # db.create_all()
-    # create_user("victor.bonnaf@gmail.com", "victor")  
-    add_wallet("victor.bonnaf@gmail.com", "0x39C26c5Ea9fC05839eFe0e55b462EB442518E871", 56)
+    create_user("adrian.boyer@gmail.com", "adrian")  
+    add_wallet("adrian.boyer@gmail.com", "0x4fB36d955dB74ca2ba608b4F93d51eAcfe888349", 1)
     # print(portefolio_by_user("victor.bonnaf@gmail.com", "victor"))
