@@ -432,9 +432,8 @@ def display_page(pathname):
 
 # ------- DATA INITILISATION --------------------------------------------------------
 
-# username,password = test()
 portofolios , username_db , password_db = portefolio_by_user("victor.bonnaf@gmail.com", "victor")  
-compte = 1
+compte = 0
 
 default_transaction=transaction(portofolios[compte][0], portofolios[compte][1])
 
@@ -638,10 +637,10 @@ def update_liste_wallet(value1, value2, n_clicks):
     store = "{}-{}".format(value2, value1)
     for i in range(0, n_clicks):
         liste_wallet.append(store)
+        print(n_clicks)
     for i in range(len(liste_wallet)) :  
         list.append(
-            dbc.Button("wallet {}".format(i+1),id = "button {}".format(i+1), className="btn btn-outline-light mb-3", style={"background-color":"transparent"}))
-            
+            dbc.Button("wallet {}".format(i+1),id = "button {}".format(i+1), className="btn btn-outline-light mb-3", style={"background-color":"transparent"}))      
     return list, liste_wallet
 
 @app.callback(

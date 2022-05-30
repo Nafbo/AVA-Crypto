@@ -25,6 +25,7 @@ from src.app.feature_price.price import price
 from src.app.feature_transaction.transaction import transaction
 from src.app.database.database import create_user
 from src.app.database.database import portefolio_by_user
+from src.app.database.database import add_wallet
 
  #-------------- add images --------------#
 
@@ -403,19 +404,20 @@ inscription = html.Div([
 @app.callback(Output('url_inscription', 'pathname'),Output('output-state-2', 'children'), Input('login-button-2', 'n_clicks'),[State('uname-box-2', 'value'), State('pwd-box-2', 'value'),State('pwd-box-3', 'value')])
 def inscription_button_click(n_clicks, username, password, Password):
     if n_clicks > 0:
-        if username == 'test' and password == 'test':
-                return '/inscription', 'Username or password is already used'
+        if username is None or password is None and Password is None:
+                return '/inscription', 'Please fill in the information above'
             
         elif password != Password:
             return '/inscription', 'password and password confirmation are not the same'
         
-        else:
+        elif username is not None and password is not None and Password is not None:
             create_user(username, password)
+            dash.callback_context.response.set_cookie('mycookie', username)
+            dash.callback_context.response.set_cookie('mycookie_2', password)
             return '/page-2' , ''
         
     
-@app.callback(Output('page-content', 'children'), Output('redirect', 'pathname'),
-              [Input('url', 'pathname')])
+@app.callback(Output('page-content', 'children'), Output('redirect', 'pathname'),[Input('url', 'pathname')])
 def display_page(pathname):
 # ''' callback to determine layout to return '''
     # Nous devons déterminer deux choses à chaque fois que l'utilisateur navigue :
@@ -462,9 +464,13 @@ def cookie ():
  #-------------- Second page --------------#
 def page_2():
     portofolios , username_db , password_db = portefolio_by_user(cookie()[0], cookie()[1])
-    wallet_2,total=wallet(portofolios[compte][0], portofolios[compte][1])  
-    default_name=wallet_2['Name'].head(1)
-    
+    if portofolios == []: 
+        wallet_2,total=wallet("0xc0698d8f7e43805299c580eee33b56a0ab5b4b36", 56) 
+        titre = "Wallet exemple" 
+    else:
+        wallet_2,total=wallet(portofolios[compte][0], portofolios[compte][1]) 
+        titre = cookie()[0]
+    default_name=wallet_2['Name'].head(1)    
     page_2_layout = dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
 
         #-------------- HEADER --------------#
@@ -486,7 +492,7 @@ def page_2():
             dbc.Col([
                 dbc.Row([
                     dbc.Col([
-                        html.H4(cookie()[0], className='modal-title ')
+                        html.H4(titre, className='modal-title ')
                     ],className="py-1 "),  
                 ]), #parametre du text w/ bootstrap   df. bootstrap cheatsheet  
             ], className="card border-success ", width={'size':9, 'offset':1}),
@@ -639,7 +645,6 @@ def page_2():
 # ------- CALLBACK -------------------------------------------------------
 
 #-------------- Add wallet Callback --------------# 
-
 @app.callback(Output('url_log', 'pathname'), Input('logout_img', 'n_clicks'))
 def logout_button_clickk(n_clicks):
     if n_clicks > 0:
@@ -647,18 +652,11 @@ def logout_button_clickk(n_clicks):
 
 @app.callback([Output("list_wallet","children"),Output("wallet_list","data")],[Input("dropdown_blockchain","value"), Input("text_address","value"), Input("enter","n_clicks") ])
 def update_liste_wallet(value1, value2, n_clicks):
-    
-    list =[]
-    liste_wallet =[]
-    store = "{}-{}".format(value2, value1)
-    for i in range(0, n_clicks):
-        liste_wallet.append(store)
-    for i in range(len(liste_wallet)) :  
-        list.append(
-            dbc.Button("wallet {}".format(i+1),id = "button {}".format(i+1), className="btn btn-outline-light mb-3", style={"background-color":"transparent"}))      
-    print(liste_wallet)
-    # add_wallet()
-    return list, liste_wallet
+    portofolios , username_db , password_db = portefolio_by_user(cookie()[0], cookie()[1])
+    store = "{}-{}".format(value2, value1)     
+    if n_clicks > 0:
+        add_wallet(username_db, store.split("-")[0], int(store.split("-")[2]))
+    return()
 
 @app.callback(Output("modal", "is_open"),[Input("open", "n_clicks"), Input("close", "n_clicks")],[State("modal", "is_open")],)
 def toggle_modal(n1, n2, is_open):
@@ -673,12 +671,12 @@ def update_store_wallet_all(value_drop, value_text) :
 
 @app.callback(Output ("store_current_blockchain", "data"),[Input("dropdown_blockchain","value")])
 def update_adress(value) :
-        number_chain = value.rpartition('-')[2]
-        return int(number_chain)
+    number_chain = value.rpartition('-')[2]
+    return int(number_chain)
 
 @app.callback(Output ("store_current_address", "data"),[Input("text_address","value")])
 def update_adress(value) :
-        return value
+    return value
     
 # Variable ds fct
 @app.callback(Output("current_address", "children"),Input("store_current_address", "data"))
@@ -704,7 +702,10 @@ def update_add_wallet(n):
 @app.callback(Output("details_output", "children"),Input('dropdown_details', 'value'))
 def update_output_details(value_slctd):
     portofolios , username_db , password_db = portefolio_by_user(cookie()[0], cookie()[1])
-    wallet_2,total=wallet(portofolios[compte][0], portofolios[compte][1])
+    if portofolios == []: 
+        wallet_2,total=wallet("0xc0698d8f7e43805299c580eee33b56a0ab5b4b36", 56) 
+    else:
+        wallet_2,total=wallet(portofolios[compte][0], portofolios[compte][1])
     dff = wallet_2[wallet_2['Name']==value_slctd]
     balance = "{}".format(dff['Balance']).split('\n',1)[0].split('    ',1)[1]
     holdings = "{}".format(dff['Holdings (en USD)']).split('\n',1)[0].split('    ',1)[1]
@@ -780,10 +781,15 @@ def update_output_temps_reel(value_slctd):
 def render_page_content(pathname):
     if pathname=="/page-2" :
         portofolios , username_db , password_db = portefolio_by_user(cookie()[0], cookie()[1])
-        wallet_2,total=wallet(portofolios[compte][0], portofolios[compte][1]) 
-        default_transaction=transaction(portofolios[compte][0], portofolios[compte][1]) 
+        if portofolios == []: 
+            wallet_2,total=wallet("0xc0698d8f7e43805299c580eee33b56a0ab5b4b36", 56) 
+            default_transaction=transaction("0xc0698d8f7e43805299c580eee33b56a0ab5b4b36", 56) 
+            wallet_history_2 = wallet_history("0xc0698d8f7e43805299c580eee33b56a0ab5b4b36", 56)
+        else:
+            wallet_2,total=wallet(portofolios[compte][0], portofolios[compte][1])
+            default_transaction=transaction(portofolios[compte][0], portofolios[compte][1])
+            wallet_history_2 = wallet_history(portofolios[compte][0], portofolios[compte][1]) 
         default_name=wallet_2['Name'].head(1)
-        wallet_history_2 = wallet_history(portofolios[compte][0], portofolios[compte][1])
         return [
 
             dbc.Row([
@@ -891,26 +897,26 @@ def render_page_content(pathname):
         ]
         
 
-@app.callback(
-    Output('donut', 'figure'),
-    Input('dropdown_donut', 'value')
-)
+@app.callback(Output('donut', 'figure'),Input('dropdown_donut', 'value'))
 def update_graph(value_slctd):
     portofolios , username_db , password_db = portefolio_by_user(cookie()[0], cookie()[1])
-    wallet_2,total=wallet(portofolios[compte][0], portofolios[compte][1])
+    if portofolios == []: 
+            wallet_2,total=wallet("0xc0698d8f7e43805299c580eee33b56a0ab5b4b36", 56) 
+    else:
+        wallet_2,total=wallet(portofolios[compte][0], portofolios[compte][1])
     wallet_slctd = wallet_2[wallet_2['Name'].isin(value_slctd)]
     figln2 = px.pie(wallet_slctd, names='Name', values='Balance', color='Name', hover_name='Name', hole=.4)
     return figln2
 
 
 # Barchart - Balance - Crypto
-@app.callback(
-    Output('bar_chart', 'figure'),
-    Input('checklist_bar', 'value')
-)
+@app.callback(Output('bar_chart', 'figure'),Input('checklist_bar', 'value'))
 def update_graph(value_slctd):
     portofolios , username_db , password_db = portefolio_by_user(cookie()[0], cookie()[1])
-    wallet_2,total=wallet(portofolios[compte][0], portofolios[compte][1])
+    if portofolios == []: 
+        wallet_2,total=wallet("0xc0698d8f7e43805299c580eee33b56a0ab5b4b36", 56) 
+    else:
+        wallet_2,total=wallet(portofolios[compte][0], portofolios[compte][1])
     wallet_slctd = wallet_2[wallet_2['Name'].isin(value_slctd)]
     fighist = px.histogram(wallet_slctd, x='Name', y='Balance', color="Name",  hover_name='Name')
     return fighist

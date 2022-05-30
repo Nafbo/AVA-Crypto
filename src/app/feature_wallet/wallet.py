@@ -1,5 +1,6 @@
 from src.app.feature_wallet.link_address_balance import link_address_balance
 import pandas as pd
+import numpy as np
 
 def wallet(address,chain_id):
     '''Formatting the information retrieved for a wallet
@@ -31,10 +32,11 @@ def wallet(address,chain_id):
         crypto_response.append(crypto)
         crypto = {}
     cf = pd.DataFrame(crypto_response)
+    cf = cf.replace(to_replace='None', value=np.nan).dropna()
     cf = cf.sort_values(by=['Name'] ,ascending=True)
 
     return(cf, total)
 
 
 if __name__ == '__main__':
-    print(wallet("0xd5Ac26b0FE1D3Ae9A7679cD92598fF02d79A9E26", 1))
+    print(wallet("0xc0698d8f7e43805299c580eee33b56a0ab5b4b36", 56) )
