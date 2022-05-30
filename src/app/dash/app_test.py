@@ -647,6 +647,7 @@ def logout_button_clickk(n_clicks):
 
 @app.callback([Output("list_wallet","children"),Output("wallet_list","data")],[Input("dropdown_blockchain","value"), Input("text_address","value"), Input("enter","n_clicks") ])
 def update_liste_wallet(value1, value2, n_clicks):
+    
     list =[]
     liste_wallet =[]
     store = "{}-{}".format(value2, value1)
@@ -655,6 +656,8 @@ def update_liste_wallet(value1, value2, n_clicks):
     for i in range(len(liste_wallet)) :  
         list.append(
             dbc.Button("wallet {}".format(i+1),id = "button {}".format(i+1), className="btn btn-outline-light mb-3", style={"background-color":"transparent"}))      
+    print(liste_wallet)
+    # add_wallet()
     return list, liste_wallet
 
 @app.callback(Output("modal", "is_open"),[Input("open", "n_clicks"), Input("close", "n_clicks")],[State("modal", "is_open")],)
@@ -686,7 +689,6 @@ def update_current_wallet (data):
 @app.callback(Output("add_wallet", "children"),Input("enter", "n_clicks"))
 def upade_add_block_wallet(n) :
     if n :
-        print("AAAAAAAAAAAAAAAAAAAAAAJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ")
         return [
             html.Button([
                         html.P(id="wallet_n")
