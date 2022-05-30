@@ -1,9 +1,8 @@
 # -----IMPORT -----------------------------------------------------
 from tracemalloc import stop
 import dash
-from dash import dcc
 # import dash_core_components as dcc
-from dash import html
+from dash import html ,dcc, callback_context
 from dash.dependencies import Output, Input, State
 import dash_bootstrap_components as dbc
 import plotly.express as px
@@ -112,7 +111,7 @@ def login_status(url):
     ''' callback to display login/logout link in the header '''
     if hasattr(current_user, 'is_authenticated') and current_user.is_authenticated \
             and url != '/logout':  # If the URL is /logout, then the user is about to be logged out anyways
-        return dcc.Link('logout', href='/page-2'), current_user.get_id()
+        return dcc.Link('logout', href='/dashboard'), current_user.get_id()
     else:
         return dcc.Link('', href='/login',style={'textAlign': 'center'}), 'loggedout'
 
@@ -290,7 +289,7 @@ def login_button_click(n_clicks, username, password):
     if n_clicks > 0:
         portofolios , username_db , password_db =portefolio_by_user(username, password)
         if username == username_db and password == password_db:
-            return '/page-2', ''
+            return '/dashboard', ''
         else:
             return '/login', 'Incorrect username or password'
         
@@ -405,7 +404,7 @@ def inscription_button_click(n_clicks, username, password, Password):
         
         else:
             create_user(username, password)
-            return '/page-2' , ''
+            return '/dashboard' , ''
         
     
 @app.callback(Output('page-content', 'children'), Output('redirect', 'pathname'),
@@ -422,7 +421,7 @@ def display_page(pathname):
     url = dash.no_update
     if pathname == '/login':
         view = login
-    elif pathname == '/page-2':
+    elif pathname == '/dashboard':
         view = page_2_layout
     elif pathname =='/inscription':
         view = inscription
@@ -434,7 +433,7 @@ def display_page(pathname):
 
 # username,password = test()
 portofolios , username_db , password_db = portefolio_by_user("victor.bonnaf@gmail.com", "victor")  
-compte = 1
+compte = 0
 
 default_transaction=transaction(portofolios[compte][0], portofolios[compte][1])
 
@@ -599,14 +598,14 @@ page_2_layout = dbc.Container([    #dbc.Container mieux que html.div pour bootst
         dbc.Col([
             dbc.Card([
                 dbc.CardHeader([
-                    dcc.Location(id="url_details"),
-                    dbc.Nav([
-                        dbc.NavLink("Global View", href="/page-2" ,active="exact"),
-                        dbc.NavLink("Transactions", href="/page-2/transactions", active ="exact")
-                    ]),
+                    html.Button('Global View' , id='url_details', n_clicks=0 , style={"background-color":"transparent"}, className="btn btn-outline-light mb-3"),
+                    html.Button('Transactions' ,id='transac', n_clicks=0,style={"background-color":"transparent"}, className="btn btn-outline-light mb-3"),
+                    html.Br(),
+                    html.Div(id='container-button-timestamp')   
+                    
                 ]),
 
-                dbc.CardBody(id="page-content-details")
+                dbc.CardBody(id="page-content-details", children="")
 
             ])
         ], width = 10),
@@ -795,9 +794,10 @@ def update_output_temps_reel(value_slctd):
     ]
 
  #-------------- NavBar Callback --------------#    
-@app.callback(Output("page-content-details", "children"),[Input("url_details","pathname")])
-def render_page_content(pathname):
-    if pathname=="/page-2" :
+@app.callback(Output('container-button-timestamp', "children"),Input('url_details','n_clicks'), Input('transac','n_clicks') )
+def displayClick(btn1,btn2):
+    changed_id = [p['prop_id'] for p in callback_context.triggered][0]
+    if 'url_details' in changed_id:
         return [
 
             dbc.Row([
@@ -857,7 +857,7 @@ def render_page_content(pathname):
 
         ]      
 
-    elif pathname=="/page-2/transactions" :
+    elif 'transac' in changed_id:
 
         return [
             dbc.Row([
@@ -872,21 +872,23 @@ def render_page_content(pathname):
                                 data=default_transaction.to_dict('records'),
                                 columns=[{'id': c, 'name': c} for c in default_transaction.columns],
                                 page_action='none',
-                                style_table={'overflowY': 'auto','height': 400},
+                                style_table={'overflowY': 'auto','height': 400, 'width':'auto'},
                                 style_cell={
                                     'height': 'auto',
                                     'minWidth': '180px', 'width': '180px', 'maxWidth': '180px',
                                     'whiteSpace': 'normal'
                                 },
                                 style_header={
+                                    'textAlign':'center',
                                     'backgroundColor': 'hex(F8F8F8)',
                                     'border': '1px solid pink' ,
                                     'fontWeight': 'bold',
                                     'color':'black'
                                 },
                                 style_data={
-                                    'width': '150px', 'minWidth': '150px', 'maxWidth': '150px',
+                                    'width': '125px', 'minWidth': '125px', 'maxWidth': '125px',
                                     # 'border': '1px solid blue' ,
+                                    'textAlign':'center',
                                     'textOverflow': 'ellipsis',
                                     'backgroundColor': 'rgba(255, 255, 255, 0)',
                                     'color': 'black'
@@ -903,6 +905,66 @@ def render_page_content(pathname):
                 ])
             ])
         ]
+    
+    else :
+        return [
+
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardHeader([ 
+                            html.H4("Your Token"),
+                            dcc.Dropdown(id='dropdown_donut', 
+                                multi=True, #peut choisir plusieurs valeurs
+                                value=default_name,
+                                options=[{'label':x, 'value':x}
+                                            for x in sorted(wallet['Name'].unique())],
+                            ),
+                        ]),
+
+                        dbc.CardBody([
+                            dcc.Graph(id='donut', figure={})
+                        ]),
+
+                    ],className="card border-light mb-3"),
+                ],width=6),
+
+                dbc.Col([
+                    dbc.Card([
+                            dbc.CardHeader([
+                                html.H4("Wallet History")
+                            ]),
+
+                            dbc.CardBody([
+                                dcc.Graph(figure=px.line(wallet_history, x='Date', y='Holdings (en USD)'))      
+                            ]),
+                    ], className="card border-light mb-3")
+                ],width=6),
+            ]),
+
+            dbc.Row([
+                dbc.Col([
+                   dbc.Card([
+                        dbc.CardHeader([
+                            html.H4("Your token"), 
+
+                            dcc.Checklist(id='checklist_bar',
+                                value=default_name,
+                                options=[{'label':x, 'value':x}
+                                    for x in sorted(wallet['Name'].unique())],
+                                labelClassName='text-secondary mx-1'  #espace entre les options
+                            ),
+                        ]),
+
+                        dbc.CardBody([
+                            dcc.Graph(id='bar_chart', figure={}, style={"height": "95%"}),
+                        ]),
+                    ], className='card border-light'),
+                ]),
+            ]),
+
+
+        ]      
         
 
 @app.callback(
