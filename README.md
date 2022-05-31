@@ -9,8 +9,10 @@
 <pre><code>pip install -r requirements.txt</code></pre>
 <p>Know launch the <code>main.py</code> file to run the dash application locally on your web browser</p>
 
-## Globally deployable (with Heroku)
-<p>Login in to Heroku</p>
+## Cloud deployable (with Heroku)
+<p>Before deploying our application on the cloud with heroku you need to create an account on:</p>
+<p><code>https://dashboard.heroku.com/apps</code></p>
+<p>Then you can link your terminal to Heroku with</p>
 <pre><code>heroku login</code></pre>
 <p>Clone the repository github heroku</p>
 <pre><code>heroku git:clone -a avacrypto</code>
