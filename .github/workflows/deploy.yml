@@ -1,0 +1,20 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Deploy on Heroku
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        with:
+          heroku_api_key: "8e08e930-5340-4cb0-8e61-afedad6e511c"
+          heroku_app_name: "avacrypto" #Must be unique in Heroku
+          heroku_email: "victor.bonnaf@gmail.com"
