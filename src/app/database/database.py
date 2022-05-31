@@ -5,7 +5,7 @@ import numpy as np
 
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://yeplwxjlhbauvi:48668289ae0c54004d2e532014cdcf6a2e9d34b4b63b74f0c35801b6b6bdc7dd@ec2-54-228-125-183.eu-west-1.compute.amazonaws.com:5432/d5e834h92a2de1"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://okfngdbxlfelsz:61efea84fd412eb9bf169c98eeb06ce09c16f5516fc376c4285b71741b65f56a@ec2-52-18-116-67.eu-west-1.compute.amazonaws.com:5432/dekq90m68q42mk"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
@@ -98,7 +98,7 @@ def portefolio_by_user(email, password):
 
 if __name__ == "__main__":
     # db.drop_all()
-    # db.create_all()
-    create_user("adrian.boyer@gmail.com", "adrian")  
-    add_wallet("adrian.boyer@gmail.com", "0x4fB36d955dB74ca2ba608b4F93d51eAcfe888349", 1)
+    db.create_all()
+    # create_user("test", "test")  
+    # add_wallet("adrian.boyer@gmail.com", "0x4fB36d955dB74ca2ba608b4F93d51eAcfe888349", 1)
     # print(portefolio_by_user("victor.bonnaf@gmail.com", "victor"))
