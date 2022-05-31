@@ -11,7 +11,7 @@
 
 ## Cloud deployable (with Heroku)
 <p>Before deploying our application on the cloud with heroku you need to create an account on:</p>
-<p><code>https://dashboard.heroku.com/apps</code></p>
+<p><link>https://dashboard.heroku.com/apps</link></p>
 <p>Then you can link your terminal to Heroku with</p>
 <pre><code>heroku login</code></pre>
 <p>Clone the repository github heroku</p>
