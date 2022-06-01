@@ -2,7 +2,7 @@ from src.test_app.test_feature_wallet.test_link_address_balance import test_link
 import pandas as pd
 import pytest 
 
-def test_wallet(address="0x102e0206113e2b662ea784eb5db4e8de1d18c8ae",chain_id=1):
+def test_wallet(address="0x1B6c73B564E277B67bF47DDAB355fEC4f30EF961",chain_id=1):
     '''Formatting the information retrieved for a wallet
     
     Parameters:

@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 
-def test_all_address_wallet(addresses=(np.array([["0x102e0206113e2b662ea784eb5db4e8de1d18c8ae",1], ["0x68a01e1b22790c3b074a7cfe4b522de16c4367ef", 56]]))):
+def test_all_address_wallet(addresses=(np.array([["0x1B6c73B564E277B67bF47DDAB355fEC4f30EF961",1], ["0x68a01e1b22790c3b074a7cfe4b522de16c4367ef", 56]]))):
     '''Formatting the information retrieved for wallets
     
     Parameters:

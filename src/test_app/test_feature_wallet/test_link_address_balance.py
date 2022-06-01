@@ -1,7 +1,7 @@
 import requests as rq
 import pandas as pd
 
-def test_link_address_balance(address="0x102e0206113e2b662ea784eb5db4e8de1d18c8ae", chain_id=1):
+def test_link_address_balance(address="0x1B6c73B564E277B67bF47DDAB355fEC4f30EF961", chain_id=1):
     '''Retrieving and formatting information from the api
     
     Parameters:
