@@ -23,16 +23,15 @@ def test_wallet(address="0x1B6c73B564E277B67bF47DDAB355fEC4f30EF961",chain_id=1)
         crypto["Name"] = x["contract_ticker_symbol"]
         y = int(x["balance"])*(10**(-int(x["contract_decimals"])))
         crypto["Balance"] = format(y,'.5f')
-
         crypto["Holdings (en USD)"] = format(x['quote'], ".5f")
-
-        crypto["Profit/Loss"] = format((y*x['quote_rate']) - (y*x['quote_rate_24h']), '.5f')
+        if x['quote_rate_24h'] is None or x['quote_rate'] == None:
+            crypto["Profit/Loss"] = None
+        else:
+            crypto["Profit/Loss"] = format((y*x['quote_rate']) - (y*x['quote_rate_24h']), '.5f')
         total += x['quote']
         
         crypto_response.append(crypto)
         crypto = {}
     cf = pd.DataFrame(crypto_response)
     cf = cf.sort_values(by=['Name'] ,ascending=True)
-
     return(cf, total)
-
