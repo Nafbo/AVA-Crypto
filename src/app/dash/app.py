@@ -153,7 +153,7 @@ index_page = dbc.Container([
 
         dbc.Row([
                 html.Div([
-                    html.H4("The world of cryptocurrencies is waiting for you !")
+                    html.H4("LOOOOOOOOOOOOOOOOOOl")#"The world of cryptocurrencies is waiting for you !")
                     
                 ],style={'textAlign': 'center'})
         ],className="mb-3"),
