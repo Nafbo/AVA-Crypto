@@ -23,7 +23,6 @@ def wallet(address,chain_id):
         crypto["Name"] = x["contract_ticker_symbol"]
         y = int(x["balance"])*(10**(-int(x["contract_decimals"])))
         crypto["Balance"] = format(y,'.5f')
-
         crypto["Holdings (en USD)"] = format(x['quote'], ".5f")
 
         crypto["Profit/Loss"] = format((y*x['quote_rate']) - (y*x['quote_rate_24h']), '.5f')
