@@ -24,7 +24,10 @@ def all_address_wallet(addresses):
             y = int(x["balance"])*(10**(-int(x["contract_decimals"])))
             crypto["Balance"] = format(y,'.5f')
             crypto["Holdings"] = format(x['quote'], ".5f")
-            crypto["Profit/Loss"] = format((y*x['quote_rate']) - (y*x['quote_rate_24h']), '.5f')
+            if x['quote_rate_24h'] is None or x['quote_rate'] == None:
+                crypto["Profit/Loss"] = None
+            else:
+                crypto["Profit/Loss"] = format((y*x['quote_rate']) - (y*x['quote_rate_24h']), '.5f')
             total += x['quote']
         
             crypto_response.append(crypto)
