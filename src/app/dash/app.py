@@ -293,15 +293,10 @@ def login_button_click(n_clicks, username, password):
         if username == username_db and password == password_db:
             dash.callback_context.response.set_cookie('mycookie', username)
             dash.callback_context.response.set_cookie('mycookie_2', password)
+            dash.callback_context.response.set_cookie('mycookie_3', "0")
             return '/dashboard', ''
         else:
             return '/login', 'Incorrect username or password'
-        
-# @app.callback(Output('output', 'children'), [Input('url_login', 'pathname')])
-# def update_output(value):
-#     dash.callback_context.response.set_cookie('mycookie', value)
-#     print(value + ' - output')
-#     return value + ' - output'
 
 inscription = html.Div([
 
@@ -414,6 +409,7 @@ def inscription_button_click(n_clicks, username, password, Password):
             create_user(username, password)
             dash.callback_context.response.set_cookie('mycookie', username)
             dash.callback_context.response.set_cookie('mycookie_2', password)
+            dash.callback_context.response.set_cookie('mycookie_3', "0")
             return '/dashboard' , ''
         
     
@@ -440,30 +436,25 @@ def display_page(pathname):
 
 # ------- DATA INITILISATION --------------------------------------------------------
 
-# username,password = test()
-# portofolios , username_db , password_db = portefolio_by_user("victor.bonnaf@gmail.com", "victor")  
-# compte = 1
-
-# default_transaction=transaction(portofolios[compte][0], portofolios[compte][1])
-
-# wallet,total=wallet(portofolios[compte][0], portofolios[compte][1])
-# default_name=wallet['Name'].head(1)
-
-# wallet_history = wallet_history(portofolios[compte][0], portofolios[compte][1])
-# history = px.line(wallet_history, x='Date', y='Holdings (en USD)')
-
-compte = 0
-
 def cookie ():
     allcookies=dict(flask.request.cookies)
     if 'mycookie' in allcookies:
         email=allcookies['mycookie']
         password=allcookies['mycookie_2']
-        return(email, password)
+        compte = int(allcookies['mycookie_3'])
+        return(email, password, compte)
 
  #-------------- Second page --------------#
 def page_2():
     portofolios , username_db , password_db = portefolio_by_user(cookie()[0], cookie()[1])
+    compte = cookie()[2]
+    print("\n")
+    print("\n")
+    print("\n")
+    print(cookie()[2])
+    print("\n")
+    print("\n")
+    print("\n")
     if portofolios == []: 
         wallet_2,total=wallet("0xc0698d8f7e43805299c580eee33b56a0ab5b4b36", 56) 
         titre = "You are currently on an example wallet" 
@@ -477,6 +468,11 @@ def page_2():
         dcc.Store(id="store_current_address"),
         dcc.Store(id="store_current_blockchain"),
         dcc.Store(id="store_wallet_all"),
+        html.Div(children='',id='list_wallet_2'),
+        html.Div(children='',id='list_wallet_3'),
+        html.Div(children='',id='list_wallet_4'),
+        html.Div(children='',id='list_wallet_5'),
+        html.Div(children='',id='list_wallet_6'),
 
         dbc.Row([   #divise la page en 3 ligne : le titres / dropdown / derniers bar chart
             dbc.Col([  #divise les lignes en colonnes ici que le titre
@@ -558,15 +554,14 @@ def page_2():
             ],className="mb-3"),
         ]),
 
-        dcc.Store (id="wallet_list", data=[]),
+        dcc.Store(id="wallet_list", data=[]),
 
         dbc.Row([
             dbc.Col([
                 dbc.Row([
                     dbc.Card([ 
                         dbc.CardHeader("Your Address :"),
-                        dbc.CardBody([
-                            dcc.Location(id="url_wallet"),
+                        dbc.CardBody([               
                             dbc.Nav(id='list_wallet', children = [], vertical=True),])
                         ]) 
                 
@@ -653,10 +648,58 @@ def logout_button_clickk(n_clicks):
 @app.callback([Output("list_wallet","children"),Output("wallet_list","data")],[Input("dropdown_blockchain","value"), Input("text_address","value"), Input("enter","n_clicks") ])
 def update_liste_wallet(value1, value2, n_clicks):
     portofolios , username_db , password_db = portefolio_by_user(cookie()[0], cookie()[1])
-    store = "{}-{}".format(value2, value1)     
+    store = "{}-{}".format(value2, value1)  
+    list_1 = []
     if n_clicks > 0:
         add_wallet(username_db, store.split("-")[0], int(store.split("-")[2]))
-    return()
+    for i in range(len(portofolios)) :  
+        list_1.append(
+            dbc.Button("wallet {} blockchain {}".format(i+1,portofolios[i][1]), id='button {}'.format(i+1), n_clicks=0, className="btn btn-outline-light mb-3", style={"background-color":"transparent"}))
+    return(list_1, '')
+
+
+#---------------------------- Boucle CallBack--------------------------
+    
+@app.callback(Output("list_wallet_2","children"), Input('button 1','n_clicks'))
+def update_wallet_id(n_clicks):
+    if n_clicks >0:
+        dash.callback_context.response.set_cookie('mycookie_3', "0")
+        return ''
+    else:
+        return ''
+
+@app.callback(Output("list_wallet_3","children"), Input('button 2','n_clicks'))
+def update_wallet_id(n_clicks):
+    if n_clicks >0:
+        dash.callback_context.response.set_cookie('mycookie_3', '1')
+        return ''
+    else :
+        return ''
+
+@app.callback(Output("list_wallet_4","data"), Input('button 3','n_clicks'))
+def update_wallet_id(n_clicks):
+    if n_clicks >0:
+        dash.callback_context.response.set_cookie('mycookie_3', '2')
+        return ''
+    else :
+        return ''
+
+@app.callback(Output("list_wallet_5","data"), Input('button 4','n_clicks'))
+def update_wallet_id(n_clicks):
+    if n_clicks >0:
+        dash.callback_context.response.set_cookie('mycookie_3', '3')
+        return ''
+    else :
+        return ''
+
+@app.callback(Output("list_wallet_6","data"), Input('button 5','n_clicks'))
+def update_wallet_id(n_clicks):
+    if n_clicks >0:
+        dash.callback_context.response.set_cookie('mycookie_3', '4')
+        return ''
+    else :
+        return ''
+# ----------------------------------------------------------------------
 
 @app.callback(Output("modal", "is_open"),[Input("open", "n_clicks"), Input("close", "n_clicks")],[State("modal", "is_open")],)
 def toggle_modal(n1, n2, is_open):
@@ -702,6 +745,7 @@ def update_add_wallet(n):
 @app.callback(Output("details_output", "children"),Input('dropdown_details', 'value'))
 def update_output_details(value_slctd):
     portofolios , username_db , password_db = portefolio_by_user(cookie()[0], cookie()[1])
+    compte = cookie()[2]
     if portofolios == []: 
         wallet_2,total=wallet("0xc0698d8f7e43805299c580eee33b56a0ab5b4b36", 56) 
     else:
@@ -780,6 +824,7 @@ def update_output_temps_reel(value_slctd):
 @app.callback(Output('container-button-timestamp', "children"),Input('url_details','n_clicks'), Input('transac','n_clicks') )
 def displayClick(btn1,btn2):
     portofolios , username_db , password_db = portefolio_by_user(cookie()[0], cookie()[1])
+    compte = cookie()[2]
     if portofolios == []: 
         wallet_2,total=wallet("0xc0698d8f7e43805299c580eee33b56a0ab5b4b36", 56) 
         default_transaction=transaction("0xc0698d8f7e43805299c580eee33b56a0ab5b4b36", 56) 
@@ -963,6 +1008,7 @@ def displayClick(btn1,btn2):
 @app.callback(Output('donut', 'figure'),Input('dropdown_donut', 'value'))
 def update_graph(value_slctd):
     portofolios , username_db , password_db = portefolio_by_user(cookie()[0], cookie()[1])
+    compte = cookie()[2]
     if portofolios == []: 
             wallet_2,total=wallet("0xc0698d8f7e43805299c580eee33b56a0ab5b4b36", 56) 
     else:
@@ -976,6 +1022,7 @@ def update_graph(value_slctd):
 @app.callback(Output('bar_chart', 'figure'),Input('checklist_bar', 'value'))
 def update_graph(value_slctd):
     portofolios , username_db , password_db = portefolio_by_user(cookie()[0], cookie()[1])
+    compte = cookie()[2]
     if portofolios == []: 
         wallet_2,total=wallet("0xc0698d8f7e43805299c580eee33b56a0ab5b4b36", 56) 
     else:
@@ -988,9 +1035,3 @@ def update_graph(value_slctd):
 
 def launch_app():
     return app.run_server(debug=False) 
-
-
-# if __name__=='__main__':
-#     app.run_server(debug=True)   
-
-
