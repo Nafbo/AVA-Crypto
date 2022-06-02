@@ -10,6 +10,8 @@
 <p>Now launch the <code>main.py</code> file to run the dash application locally on your web browser</p>
 
 ## Globally deployable (with Heroku)
+<p>Before you can deploy our code using heroku, you must create an account on : </p>
+<p><link>https://dashboard.heroku.com/apps</link></p>
 <p>Login into Heroku</p>
 <pre><code>heroku login</code></pre>
 <p>Clone the repository github heroku</p>
@@ -23,3 +25,8 @@
 <pre><code>git add .</code>
 <code>git commit -am "YOUR COMMIT"</code>
 <code>git push --force heroku main</code></pre>
+
+## Continuous deployment
+<p>Thanks to GitHub 'Actions', we have implemented a continuous deployment, which, when you push your code to our repository, the application will automatically be redeployed with the changes you have made.</p>
+<p>You can find our application deployed by clicking on the following link :</p>
+<p><link>https://avacrypto.herokuapp.com/</link></p>
