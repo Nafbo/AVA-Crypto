@@ -92,7 +92,7 @@ app = dash.Dash(__name__, server=server,
                 suppress_callback_exceptions=True,
                 external_stylesheets=[dbc.themes.QUARTZ],
                 meta_tags=[{'name': 'viewport',         
-                     'content': 'width=device-width, initial-scale=1.0'}])
+                     'content': 'width=device-width, initial-scale=1.0, maximum-scale=1.9, minimun_scale=0.5,'}])
 
 def create_user(email,password):
     '''Create an user in the database
@@ -182,12 +182,6 @@ def login_status(url):
 
 index_page = dbc.Container([
         html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
 
         dbc.Row([
             
@@ -201,8 +195,6 @@ index_page = dbc.Container([
                 
         ], className="mb-4"),
 
-        html.Br(),
-
         dbc.Row([
                 html.Div([
                     html.H3("Welcome to AVA crypto, the easy-to-use dashboard that allows you to have a global view of yours cryptocurrencies ")
@@ -214,7 +206,7 @@ index_page = dbc.Container([
 
         dbc.Row([
                 html.Div([
-                    html.H4("The world of cryptocurrencies is waiting for you !")
+                    html.H5("The world of cryptocurrencies is waiting for you !")
                     
                 ],style={'textAlign': 'center'})
         ],className="mb-3"),
@@ -226,16 +218,6 @@ index_page = dbc.Container([
                 ], className="mb-2" ),
             ], width={'size':2, 'offset':5},),
         ], className="mb-5"),
-
-        html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
 
         html.Div([
         
@@ -253,13 +235,6 @@ index_page = dbc.Container([
 login = dbc.Container([
 
     html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-
     dbc.Row([
         html.Div([
 
@@ -270,17 +245,13 @@ login = dbc.Container([
         ], style={'textAlign': 'center'}),   
     ], className="mb-4"),
 
-            html.Br(),
             dcc.Location(id='url_login', refresh=True),
-            html.Br(),
     dbc.Row(
         html.Div([
                 html.H3("Please log in to continue :", id='h1')
                 
         ],style={'textAlign': 'center'})
     ),
-           
-    html.Br(),
     
     dbc.Row([
         html.Div([
@@ -305,11 +276,6 @@ login = dbc.Container([
     dbc.Row([
          html.Div(children='', id='output-state'),
     ]),    
-   
-    html.Br(),
-    html.Br(),
-    html.Br(),
-
 
     dbc.Row([
         
@@ -325,18 +291,6 @@ login = dbc.Container([
             ],  className="mb-2" )
         ],width={'size':2},),
     ]),
-
-            
-
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
 
     html.Div([
     
@@ -361,14 +315,6 @@ def login_button_click(n_clicks, username, password):
 
 inscription = html.Div([
 
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-
     dbc.Row([
         html.Div([
 
@@ -378,13 +324,10 @@ inscription = html.Div([
             ),
         ], style={'textAlign': 'center'}),   
     ], className="mb-4"),
-
-
     dcc.Location(id='url_inscription', refresh=True),
-
     dbc.Row(
         html.Div([
-                html.H3("Register:", id='h1')
+                html.H4("Register:", id='h1')
                 
         ],style={'textAlign': 'center'})
     ),
@@ -409,14 +352,14 @@ inscription = html.Div([
             ],  width={'size':4, "offset":4}),
         ],style={'textAlign': 'center'})
         
-    ], className="ml-3 mx-1 mb-3"),
+    ], className="ml-3 mx-1 mb-1"),
                 
     dbc.Row([
         html.Div([
              html.Button(children='Register', n_clicks=0,
                               type='submit', id='login-button-2', className="btn btn-light", style={'textAlign': 'center'}),
         ], style={'textAlign': 'center'})
-    ], className ="mb-3"),             
+    ], className ="mb-1"),             
                  
     dbc.Row([
          html.Div(children='', id='output-state-2'),
@@ -438,21 +381,11 @@ inscription = html.Div([
         ],width={'size':2},),
     ]),    
 
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-
     html.Div([
     
         html.Img(
                 src='data:image/png;base64,{}'.format(encoded_image_reseaux.decode()),
-                height = "100%"
+                height = "70%"
             )
     ],style={'textAlign': 'center'})   
 ])
@@ -828,7 +761,7 @@ def update_output_details(value_slctd):
 # Token Price : temps_reel_output
 @app.callback(Output("temps_reel_output","children"),Input("dropdown_temps_reel","value"))
 def update_output_temps_reel(value_slctd):
-    price_tps = price(value_slctd)
+    price_tps= price(value_slctd)
     price_final =  price_tps[0]
 
     if value_slctd == "bitcoin" :
@@ -838,10 +771,10 @@ def update_output_temps_reel(value_slctd):
     elif value_slctd == "cardano" :
         image_logo = encoded_image_cardano
 
-    if price_final > 0 :
+    if price_tps[1] == 'green' :
         image_profit = encoded_image_plus
     
-    elif price_final < 0 :
+    elif price_tps[1] == 'red' :
         image_profit = encoded_image_moins
 
     return [
@@ -850,7 +783,7 @@ def update_output_temps_reel(value_slctd):
                 html.Div([
                     html.Img(
                         src='data:image/png;base64,{}'.format(image_logo.decode()),
-                        height = "80px"
+                        height = "70px"
                     ),
                 ],style={'text-align': 'center'} )       
                 
@@ -865,7 +798,7 @@ def update_output_temps_reel(value_slctd):
                         
                             html.Img(
                                 src='data:image/png;base64,{}'.format(image_profit.decode()),
-                                className="img-fluid", )# height = "40px", )
+                                className="img-fluid",height = "40px", )
                     
                         ], style={'text-align': 'center'})
                     ]),
