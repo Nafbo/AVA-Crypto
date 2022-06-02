@@ -182,9 +182,6 @@ def login_status(url):
 
 index_page = dbc.Container([
         html.Br(),
-        html.Br(),
-        html.Br(),
-        
 
         dbc.Row([
             
@@ -197,7 +194,6 @@ index_page = dbc.Container([
                         ], style={'textAlign': 'center'}), 
                 
         ], className="gy-4 mb-4"),
-        html.Br(),
 
 
         dbc.Row([
@@ -212,7 +208,7 @@ index_page = dbc.Container([
 
         dbc.Row([
                 html.Div([
-                    html.H4("The world of cryptocurrencies is waiting for you !")
+                    html.H5("The world of cryptocurrencies is waiting for you !")
                     
                 ],style={'textAlign': 'center'})
         ],className="gy-4 mb-3"),
@@ -225,7 +221,6 @@ index_page = dbc.Container([
                 ], className="mb-2" ),
             ], width={'size':4, "offset":4},className="col-7 col-md-4 my-3 col-lg-4 "),
         ], className="gy-4 mb-5"),
-        html.Br(),
 
         html.Div([
         
@@ -243,9 +238,6 @@ index_page = dbc.Container([
 login = dbc.Container([
 
     html.Br(),
-    html.Br(),
-    html.Br(),
-
     dbc.Row([
         html.Div([
 
@@ -309,9 +301,6 @@ login = dbc.Container([
             ],  className="mb-2" )
         ],width={'size':2},className="col-12 col-md-2 col-lg-2"),
     ], className="gy-4"),
-    
-    html.Br(),
-    html.Br(),
 
             
     html.Div([
@@ -340,7 +329,6 @@ inscription = html.Div([
     html.Br(),
 
 
-
     dbc.Row([
         html.Div([
 
@@ -357,7 +345,7 @@ inscription = html.Div([
 
     dbc.Row([
         html.Div([
-                html.H3("Register:", id='h1')
+                html.H4("Register:", id='h1')
                 
         ],style={'textAlign': 'center'})
     ], className="gy-4"),
@@ -411,13 +399,12 @@ inscription = html.Div([
         ],width={'size':2},className="col-12 col-md-2 col-lg-2"),
     ], className ="gy-4"),    
 
-    html.Br(),
   
     html.Div([
     
         html.Img(
                 src='data:image/png;base64,{}'.format(encoded_image_reseaux.decode()),
-                height = "100%"
+                height = "70%"
             )
     ],style={'textAlign': 'center'})   
 ])
@@ -793,7 +780,7 @@ def update_output_details(value_slctd):
 # Token Price : temps_reel_output
 @app.callback(Output("temps_reel_output","children"),Input("dropdown_temps_reel","value"))
 def update_output_temps_reel(value_slctd):
-    price_tps = price(value_slctd)
+    price_tps= price(value_slctd)
     price_final =  price_tps[0]
 
     if value_slctd == "bitcoin" :
@@ -815,7 +802,7 @@ def update_output_temps_reel(value_slctd):
                 html.Div([
                     html.Img(
                         src='data:image/png;base64,{}'.format(image_logo.decode()),
-                        height = "80px"
+                        height = "70px"
                     ),
                 ],style={'text-align': 'center'} )       
                 
@@ -830,7 +817,7 @@ def update_output_temps_reel(value_slctd):
                         
                             html.Img(
                                 src='data:image/png;base64,{}'.format(image_profit.decode()),
-                                className="img-fluid", )# height = "40px", )
+                                className="img-fluid",height = "40px", )
                     
                         ], style={'text-align': 'center'})
                     ]),

@@ -20,4 +20,4 @@ def price(crypto):
         return(price[crypto]['usd'], 'red')
 
 if __name__ == '__main__':
-    print(price('bitcoin'))  
+    print(price('bitcoin')[1])  
