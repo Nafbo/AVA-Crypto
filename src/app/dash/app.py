@@ -23,9 +23,9 @@ from src.app.feature_wallet.wallet import wallet
 from src.app.feature_history.wallet_history import wallet_history
 from src.app.feature_price.price import price
 from src.app.feature_transaction.transaction import transaction
-from src.app.database.database import create_user
-from src.app.database.database import portefolio_by_user
-from src.app.database.database import add_wallet
+# from src.app.database.database import create_user
+# from src.app.database.database import portefolio_by_user
+# from src.app.database.database import add_wallet
 
  #-------------- add images --------------#
 
@@ -94,7 +94,68 @@ app = dash.Dash(__name__, server=server,
                 meta_tags=[{'name': 'viewport',         
                      'content': 'width=device-width, initial-scale=1.0'}])
 
+def create_user(email,password):
+    '''Create an user in the database
+    
+    Parameters:
+    email (string): email of the user
+    password (string): password of the user
+    
+    Returns:
+    '''
+    email = email
+    password = password
+    new_user = Users(email, password)
+    db.session.add(new_user)
+    db.session.commit()
+    return()
+    
 
+def add_wallet(email, wallet, chain_id):
+    '''Add a wallet at an user in the database
+    
+    Parameters:
+    email (string): email of the user
+    wallet (string): wallet of the user
+    chain_id (int): chain id of the wallet
+    
+    Returns:
+    '''
+    result_user = Users.query.filter_by(email = email).first_or_404()
+    wallet = wallet
+    chain_id = chain_id
+    user_id = result_user.id
+    new_portofolio = Portofolio(wallet, chain_id, user_id)
+    db.session.add(new_portofolio)
+    db.session.commit()
+    return()
+
+def portefolio_by_user(email, password):
+    '''displays the portfolios of an user
+    
+    Parameters:
+    email (string): email of the user
+    password (string): password of the user
+    
+    Returns:
+    portefolios (array): wallets and chain id of the wallet 
+    '''
+    result_user = Users.query.filter_by(email = email).first_or_404()
+    portefolios = []
+    if result_user.password== password:  
+        user = {
+            "id": result_user.id,
+            "email": result_user.email,
+            "password": result_user.password,
+            "portefolios": result_user.portefolios
+            }
+        portefolios = []
+        for i in user['portefolios']:
+            result_portefolio = [i.wallet, i.chain_id]
+            portefolios.append(result_portefolio)
+        return(portefolios, user["email"], user["password"])
+    else:
+        return('',email, password)
 # ------- LAYOUT --------------------------------------------------------
 
  #-------------- First page --------------#
