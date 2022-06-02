@@ -102,7 +102,7 @@ app = dash.Dash(__name__, server=server,
 app.layout= dbc.Container([
     dcc.Location(id='url', refresh=False),
     dcc.Location(id='redirect', refresh=True),
-    dcc.Store(id='login-status', storage_type='session'),
+    dcc.Store(id='login-status', storage_type='local'),
     html.Div(id='user-status-div',),
     html.Div(id='page-content',),
 ],fluid = True)
@@ -448,13 +448,6 @@ def cookie ():
 def page_2():
     portofolios , username_db , password_db = portefolio_by_user(cookie()[0], cookie()[1])
     compte = cookie()[2]
-    print("\n")
-    print("\n")
-    print("\n")
-    print(cookie()[2])
-    print("\n")
-    print("\n")
-    print("\n")
     if portofolios == []: 
         wallet_2,total=wallet("0xc0698d8f7e43805299c580eee33b56a0ab5b4b36", 56) 
         titre = "You are currently on an example wallet" 
@@ -465,9 +458,9 @@ def page_2():
     page_2_layout = dbc.Container([    #dbc.Container mieux que html.div pour bootstrap
 
         #-------------- HEADER --------------#
-        dcc.Store(id="store_current_address"),
-        dcc.Store(id="store_current_blockchain"),
-        dcc.Store(id="store_wallet_all"),
+        dcc.Store(id="store_current_address", storage_type='local'),
+        dcc.Store(id="store_current_blockchain", storage_type='local'),
+        dcc.Store(id="store_wallet_all",storage_type='local'),
         html.Div(children='',id='list_wallet_2'),
         html.Div(children='',id='list_wallet_3'),
         html.Div(children='',id='list_wallet_4'),
@@ -528,7 +521,7 @@ def page_2():
                             value=default_name, #valeur par defaut 
                             options=[{'label':x, 'value':x} 
                                         for x in sorted(wallet_2['Name'].unique())] #choisis les valeurs selon la colonne Name : .unique() prends que les valeurs 1 fois sans duplicats
-                            ),
+                            )
                     ]),
 
                     dbc.CardBody(html.Div(id='details_output'))
@@ -752,6 +745,7 @@ def update_output_details(value_slctd):
         wallet_2,total=wallet(portofolios[compte][0], portofolios[compte][1])
     dff = wallet_2[wallet_2['Name']==value_slctd]
     balance = "{}".format(dff['Balance']).split('\n',1)[0].split('    ',1)[1]
+
     holdings = "{}".format(dff['Holdings (en USD)']).split('\n',1)[0].split('    ',1)[1]
     profit = "{}".format(dff['Profit/Loss']).split('\n',1)[0].split('    ',1)[1]
 
