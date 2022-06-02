@@ -92,7 +92,7 @@ app = dash.Dash(__name__, server=server,
                 suppress_callback_exceptions=True,
                 external_stylesheets=[dbc.themes.QUARTZ],
                 meta_tags=[{'name': 'viewport',         
-                     'content': 'width=device-width, initial-scale=1.0'}])
+                     'content': 'width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=1.9'}])
 
 def create_user(email,password):
     '''Create an user in the database
@@ -184,10 +184,7 @@ index_page = dbc.Container([
         html.Br(),
         html.Br(),
         html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
+        
 
         dbc.Row([
             
@@ -199,9 +196,9 @@ index_page = dbc.Container([
                             ),
                         ], style={'textAlign': 'center'}), 
                 
-        ], className="mb-4"),
-
+        ], className="gy-4 mb-4"),
         html.Br(),
+
 
         dbc.Row([
                 html.Div([
@@ -210,31 +207,24 @@ index_page = dbc.Container([
                 ],style={'textAlign': 'center'})
                 
 
-        ],className="mb-3"),
+        ],className="gy-4 mb-3"),
+        html.Br(),
 
         dbc.Row([
                 html.Div([
                     html.H4("The world of cryptocurrencies is waiting for you !")
                     
                 ],style={'textAlign': 'center'})
-        ],className="mb-3"),
+        ],className="gy-4 mb-3"),
+        html.Br(),
 
         dbc.Row([
             dbc.Col([   
                 dbc.Card([
                     dbc.NavLink('Click here to access the app !', href='/login',style={'textAlign': 'center'}) ,
                 ], className="mb-2" ),
-            ], width={'size':2, 'offset':5},),
-        ], className="mb-5"),
-
-        html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
-        html.Br(),
+            ], width={'size':4, "offset":4},className="col-7 col-md-4 my-3 col-lg-4 "),
+        ], className="gy-4 mb-5"),
         html.Br(),
 
         html.Div([
@@ -255,10 +245,6 @@ login = dbc.Container([
     html.Br(),
     html.Br(),
     html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
 
     dbc.Row([
         html.Div([
@@ -268,19 +254,20 @@ login = dbc.Container([
                 height = "100%"
             ),
         ], style={'textAlign': 'center'}),   
-    ], className="mb-4"),
+    ], className="gy-4 mb-4"),
 
-            html.Br(),
+  
             dcc.Location(id='url_login', refresh=True),
-            html.Br(),
-    dbc.Row(
+
+    dbc.Row([
         html.Div([
                 html.H3("Please log in to continue :", id='h1')
                 
         ],style={'textAlign': 'center'})
-    ),
-           
+    ], className="gy-4"),
     html.Br(),
+           
+
     
     dbc.Row([
         html.Div([
@@ -290,25 +277,22 @@ login = dbc.Container([
                 html.Br(),
                 dbc.Input(placeholder='Enter your password',
                     type='password', id='pwd-box', className="form-floating"),
-            ],  width={'size':4, "offset":4}),
+            ], width={'size':4, "offset":4},className="col-7 col-md-4 my-3 col-lg-4 "),
         ],style={'textAlign': 'center'})
         
-    ], className="ml-3 mx-1 mb-3"),
+    ], className="gy-4 ml-3 mx-1 mb-3"),
 
     dbc.Row([
         html.Div([
              html.Button(children='Login', n_clicks=0,
                     type='submit', id='login-button', className="btn btn-light", style={'textAlign': 'center'}),
         ], style={'textAlign': 'center'})
-    ], className ="mb-3"),
+    ], className ="gy-4 mb-3"),
        
     dbc.Row([
          html.Div(children='', id='output-state'),
-    ]),    
-   
-    html.Br(),
-    html.Br(),
-    html.Br(),
+    ], className="gy-4"),    
+
 
 
     dbc.Row([
@@ -317,27 +301,19 @@ login = dbc.Container([
             dbc.Card([
                 dbc.NavLink('Register', href='/inscription', style={'textAlign': 'center'})
             ],  className="mb-2" )
-        ], width={'size':2, "offset":4},),
+        ], width={'size':2,"offset":4},className="col-6 col-md-2 col-lg-2"),
 
         dbc.Col([
             dbc.Card([
                 dbc.NavLink('Home Page', href='/',style={'textAlign': 'center'})
             ],  className="mb-2" )
-        ],width={'size':2},),
-    ]),
+        ],width={'size':2},className="col-12 col-md-2 col-lg-2"),
+    ], className="gy-4"),
+    
+    html.Br(),
+    html.Br(),
 
             
-
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-
     html.Div([
     
         html.Img(
@@ -360,14 +336,10 @@ def login_button_click(n_clicks, username, password):
             return '/login', 'Incorrect username or password'
 
 inscription = html.Div([
+    html.Br(),
+    html.Br(),
 
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
+
 
     dbc.Row([
         html.Div([
@@ -377,17 +349,18 @@ inscription = html.Div([
                 height = "100%"
             ),
         ], style={'textAlign': 'center'}),   
-    ], className="mb-4"),
+    ], className="gy-4 mb-4"),
+    
 
 
     dcc.Location(id='url_inscription', refresh=True),
 
-    dbc.Row(
+    dbc.Row([
         html.Div([
                 html.H3("Register:", id='h1')
                 
         ],style={'textAlign': 'center'})
-    ),
+    ], className="gy-4"),
            
     html.Br(),
 
@@ -406,21 +379,21 @@ inscription = html.Div([
 
                 dbc.Input(placeholder='Confirm password',
                             type="Password", id='pwd-box-3', className="form-floating"),
-            ],  width={'size':4, "offset":4}),
+            ],  width={'size':4, "offset":4},className="col-6 col-md-4 my-3 col-lg-4 "),
         ],style={'textAlign': 'center'})
         
-    ], className="ml-3 mx-1 mb-3"),
+    ], className="gy-4 ml-3 mx-1 mb-3"),
                 
     dbc.Row([
-        html.Div([
+        dbc.Col([
              html.Button(children='Register', n_clicks=0,
                               type='submit', id='login-button-2', className="btn btn-light", style={'textAlign': 'center'}),
-        ], style={'textAlign': 'center'})
-    ], className ="mb-3"),             
+        ], style={'textAlign': 'center', "offset":4},className="col-12 col-md-12 col-lg-12")
+    ], className ="gy-4 mb-3"),             
                  
     dbc.Row([
          html.Div(children='', id='output-state-2'),
-    ]),    
+    ], className ="gy-4"),    
 
     
     dbc.Row([
@@ -429,25 +402,17 @@ inscription = html.Div([
             dbc.Card([
                 dbc.NavLink('Login', href='/login', style={'textAlign': 'center'})
             ],  className="mb-2" )
-        ], width={'size':2, "offset":4},),
+        ], width={'size':2,"offset":4},className="col-6 col-md-2 col-lg-2"),
 
         dbc.Col([
             dbc.Card([
                 dbc.NavLink('Home Page', href='/',style={'textAlign': 'center'})
             ],  className="mb-2" )
-        ],width={'size':2},),
-    ]),    
+        ],width={'size':2},className="col-12 col-md-2 col-lg-2"),
+    ], className ="gy-4"),    
 
     html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-    html.Br(),
-
+  
     html.Div([
     
         html.Img(
@@ -534,18 +499,18 @@ def page_2():
 
                     html.Img(
                         src='data:image/png;base64,{}'.format(encoded_image_ava.decode()),
-                        height = "60px"
+                        height = "60px",
                     ),
                 ]), 
-            ], width=1),
+            ], width=1,className="col-12 col-md-1 col-lg-1"),
 
             dbc.Col([
                 dbc.Row([
                     dbc.Col([
                         html.H4(titre, className='modal-title ')
                     ],className="py-1 "),  
-                ]), #parametre du text w/ bootstrap   df. bootstrap cheatsheet  
-            ], className="card border-success ", width={'size':9, 'offset':1}),
+                ], className ="gy-4"), #parametre du text w/ bootstrap   df. bootstrap cheatsheet  
+            ], className="col-12 col-md-9 col-lg-9 card border-success ", width={'size':9, 'offset':1}),
             
             dbc.Col([
                 dcc.Location(id='url_log', refresh=True),
@@ -557,8 +522,8 @@ def page_2():
                     ),
                     
                 ],n_clicks=0,type='submit', id='logout_img', className='btn btn-secondary'),
-            ],width=1),  
-        ], className="m-2"),  
+            ],width=1,className="col-5 col-md-1 col-lg-1"),  
+        ], className="gy-4 m-2"),  
 
         #-------------- BODY --------------#
 
@@ -569,8 +534,8 @@ def page_2():
                         html.H3("Overall"),
                         html.H4(total),html.H4("$")
                     ], className='card border-light mb-3 py-5 text-md-center'),
-                ],style={"height": "50%"}),
-            ], width=2),
+                ],style={"height": "50%",'text-align': 'center'}),
+            ], width=2,className="col-12 col-md-2 col-lg-2"),
 
             dbc.Col([
                 dbc.Card([
@@ -588,7 +553,7 @@ def page_2():
                     dbc.CardBody(html.Div(id='details_output'))
                 
                 ],style={"height": "100%"}, className='card border-light'),   
-            ], className  ='mb-3'),
+            ], className  ="mb-3"),
 
             dbc.Col([
                 dbc.Card([
@@ -597,7 +562,7 @@ def page_2():
 
                         dcc.Dropdown(id='dropdown_temps_reel', 
                             multi=False, #peut choisir qu'une seule valeur
-                            value="bitcoin", #valeur par defaut 
+                            value="cardano", #valeur par defaut 
                             options=["bitcoin","ethereum","cardano"] #choisis les valeurs selon la colonne Name : .unique() prends que les valeurs 1 fois sans duplicats
                             ),
                     ]),
@@ -606,7 +571,7 @@ def page_2():
 
                 ],style={"height": "100%"}, className='card border-light'),   
             ],className="mb-3"),
-        ]),
+        ], className ="gy-4"),
 
         dcc.Store(id="wallet_list", data=[]),
 
@@ -616,10 +581,10 @@ def page_2():
                     dbc.Card([ 
                         dbc.CardHeader("Your Address :"),
                         dbc.CardBody([               
-                            dbc.Nav(id='list_wallet', children = [], vertical=True),])
+                            dbc.Nav(id='list_wallet', children = [], vertical=True)], style={'max-height': '300px','overflow-y': 'auto'})
                         ]) 
                 
-                ],className="mb-3"),
+                ],className="mb-3", style={"display": "flex", "flexWrap":"nowrap"}),
 
                 dbc.Row([
                     html.Button("Add a wallet + ", id="open", className="btn btn-secondary"),
@@ -668,23 +633,23 @@ def page_2():
         
 
 
-            ],width=2), 
+            ],width=2,className="col-12 col-md-2 col-lg-2"), 
 
             dbc.Col([
-            dbc.Card([
-                dbc.CardHeader([
-                    html.Button('Global View' , id='url_details', n_clicks=0 , style={"background-color":"transparent"}, className="btn btn-outline-light mb-3"),
-                    html.Button('Transactions' ,id='transac', n_clicks=0,style={"background-color":"transparent"}, className="btn btn-outline-light mb-3"),
-                    html.Br(),
-                    html.Div(id='container-button-timestamp')   
-                    
-                ]),
+                dbc.Card([
+                    dbc.CardHeader([
+                        html.Button('Global View' , id='url_details', n_clicks=0 , style={"background-color":"transparent"}, className="btn btn-outline-light mb-3 mx-2"),
+                        html.Button('Transactions' ,id='transac', n_clicks=0,style={"background-color":"transparent"}, className="btn btn-outline-light mb-3"),
+                        html.Br(),
+                        html.Div(id='container-button-timestamp')   
+                        
+                    ]),
 
-                dbc.CardBody(id="page-content-details", children="")
+                    dbc.CardBody(id="page-content-details", children="")
 
-            ])
-        ], width = 10),
-    ]),
+                    ])
+            ], width = 10, className="col-12 col-md-10 col-lg-10" ),
+        ],className ="gy-4"),
 
 #-------------- FOOTER --------------#    
     ],fluid = True) #permet d'étirer à la largeur de la page web    
@@ -813,15 +778,15 @@ def update_output_details(value_slctd):
     return [
         dbc.Row([
             html.H5("Balance : {}".format(balance))
-            ], className=" text-md-center"),
+            ], className="gy-4 text-md-center"),
 
         dbc.Row([
             html.H5("Holdings en USD : {}".format(holdings))
-        ],className=" text-md-center"),
+        ],className="gy-4 text-md-center"),
 
         dbc.Row([
             html.H5("Profit/Loss : {}".format(profit))
-        ],className=" text-md-center"),
+        ],className="gy-4 text-md-center"),
     ]
 
 
@@ -838,10 +803,10 @@ def update_output_temps_reel(value_slctd):
     elif value_slctd == "cardano" :
         image_logo = encoded_image_cardano
 
-    if price_final > 0 :
+    if price_tps[1] == 'green' :
         image_profit = encoded_image_plus
     
-    elif price_final < 0 :
+    elif price_tps[1] == 'red' :
         image_profit = encoded_image_moins
 
     return [
@@ -854,7 +819,7 @@ def update_output_temps_reel(value_slctd):
                     ),
                 ],style={'text-align': 'center'} )       
                 
-            ],width=4,className=" py-2"),
+            ],width=4, className="col-12 col-md-4 col-lg-4"),
 
         
             dbc.Col([
@@ -870,8 +835,8 @@ def update_output_temps_reel(value_slctd):
                         ], style={'text-align': 'center'})
                     ]),
                 ],)
-            ],width = 7),  
-        ],className=" py-1")
+            ],width = 7, className="col-12 col-md-7 col-lg-7"),  
+        ],className="gy-4 py-1")
 
     ]
 
@@ -911,7 +876,7 @@ def displayClick(btn1,btn2):
                         ]),
 
                     ],className="card border-light mb-3"),
-                ],width=6),
+                ],width=6, className="col-12 col-md-6 col-lg-6"),
 
                 dbc.Col([
                     dbc.Card([
@@ -923,8 +888,8 @@ def displayClick(btn1,btn2):
                                 dcc.Graph(figure=px.line(wallet_history_2, x='Date', y='Holdings (en USD)'))      
                             ]),
                     ], className="card border-light mb-3")
-                ],width=6),
-            ]),
+                ],width=6, className="col-12 col-md-6 col-lg-6"),
+            ], className ="gy-4"),
 
             dbc.Row([
                 dbc.Col([
@@ -945,7 +910,7 @@ def displayClick(btn1,btn2):
                         ]),
                     ], className='card border-light'),
                 ]),
-            ]),
+            ], className ="gy-4"),
 
 
         ]      
@@ -996,7 +961,7 @@ def displayClick(btn1,btn2):
 
                     ],  className='card border-light mb-3'),
                 ])
-            ])
+            ], className ="gy-4")
         ]
     
     else :
@@ -1020,7 +985,7 @@ def displayClick(btn1,btn2):
                         ]),
 
                     ],className="card border-light mb-3"),
-                ],width=6),
+                ],width=6, className="col-12 col-md-6 col-lg-6"),
 
                 dbc.Col([
                     dbc.Card([
@@ -1032,8 +997,8 @@ def displayClick(btn1,btn2):
                                 dcc.Graph(figure=px.line(wallet_history_2, x='Date', y='Holdings (en USD)'))      
                             ]),
                     ], className="card border-light mb-3")
-                ],width=6),
-            ]),
+                ],width=6, className="col-12 col-md-6 col-lg-6"),
+            ], className ="gy-4"),
 
             dbc.Row([
                 dbc.Col([
@@ -1054,7 +1019,7 @@ def displayClick(btn1,btn2):
                         ]),
                     ], className='card border-light'),
                 ]),
-            ]),
+            ], className ="gy-4"),
 
 
         ]
