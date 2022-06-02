@@ -8,6 +8,7 @@
 <p>Install <code>requirements.txt</code> to have all the necessary libraries to launch our app</p>
 <pre><code>pip install -r requirements.txt</code></pre>
 <p>Now launch the <code>main.py</code> file to run the dash application locally on your web browser</p>
+<p>To finish you just have to click on the link that dash provided to launch the application.</p>
 
 ## Globally deployable (with Heroku)
 <p>Before you can deploy our code using heroku, you must create an account on : </p>
