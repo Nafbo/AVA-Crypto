@@ -873,9 +873,9 @@ def displayClick(btn1,btn2):
 
                             dbc.CardBody([
                                 dcc.Graph(figure=px.line(wallet_history_2, x='Date', y='Holdings (en USD)'))      
-                            ]),
+                            ],className="col-5 "),
                     ], className="card border-light mb-3")
-                ],width=6, className="col-12 col-md-6 col-lg-6"),
+                ],width=6),
             ], className ="gy-4"),
 
             dbc.Row([
@@ -896,7 +896,7 @@ def displayClick(btn1,btn2):
                             dcc.Graph(id='bar_chart', figure={}, style={"height": "95%"}),
                         ]),
                     ], className='card border-light'),
-                ]),
+                ],width=6, className="col-12 col-md-6 col-lg-6"),
             ], className ="gy-4"),
 
 
