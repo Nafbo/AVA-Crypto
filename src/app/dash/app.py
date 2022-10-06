@@ -59,7 +59,7 @@ encoded_image_reseaux = base64.b64encode(open(reseaux_filename, 'rb').read())
  #-------------- app Flask --------------#
 
 server = flask.Flask(__name__)
-server.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://wxymjtjkehwcxm:b2cd5e3d25c84faf3b14766fb3530db3dcdf1bd18583953c2d360535c6bc27b9@ec2-34-247-172-149.eu-west-1.compute.amazonaws.com:5432/dapm9phaf3dm8v"
+server.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://oucwzitqbudlkb:a5c8a25d3bcd367a5c09f8d6429f321231841f86453b5f93215b3bde3ca0293f@ec2-34-248-169-69.eu-west-1.compute.amazonaws.com:5432/d3ffj390qbmm2f"
 server.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(server)
