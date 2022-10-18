@@ -1,5 +1,5 @@
 # -----IMPORT -----------------------------------------------------
-from tracemalloc import stop
+# from tracemalloc import stop
 import dash
 from dash import dcc, callback_context
 # import dash_core_components as dcc
@@ -59,7 +59,7 @@ encoded_image_reseaux = base64.b64encode(open(reseaux_filename, 'rb').read())
  #-------------- app Flask --------------#
 
 server = flask.Flask(__name__)
-server.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://ahcwfgghzpeyiz:7c7f0a1e9298c566bc291ac643733da7d98fec04839d528551bba41449aba389@ec2-34-248-169-69.eu-west-1.compute.amazonaws.com:5432/d41eman9hl796f"
+server.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://xfddmevdjlcirr:a7aff7cf896ae3031db2d6100e26a601e39583bf6a3029ea190187db88fe2180@ec2-52-212-228-71.eu-west-1.compute.amazonaws.com:5432/d3c1n7bj0tkf52"
 server.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(server)
