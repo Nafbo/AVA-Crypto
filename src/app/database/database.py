@@ -1,11 +1,11 @@
 import re
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, request, jsonify, Response
-import numpy as np
 
+import numpy as np
+from flask import Flask, Response, jsonify, request
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://ahcwfgghzpeyiz:7c7f0a1e9298c566bc291ac643733da7d98fec04839d528551bba41449aba389@ec2-34-248-169-69.eu-west-1.compute.amazonaws.com:5432/d41eman9hl796f"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://htyqznrqtvrtlk:7e3e3682fdf1bd8006911a39ba51040e7947a6f3e0cc75facbe5960e20ab739d@ec2-63-32-248-14.eu-west-1.compute.amazonaws.com:5432/dbviu47ko6nlg6"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
