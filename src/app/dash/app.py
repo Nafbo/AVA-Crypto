@@ -1,28 +1,26 @@
 # -----IMPORT -----------------------------------------------------
-# from tracemalloc import stop
-import dash
-from dash import dcc, callback_context
-# import dash_core_components as dcc
-from dash import html
-from dash.dependencies import Output, Input, State
-import dash_bootstrap_components as dbc
-import plotly.express as px
-import pandas as pd
 import base64
-import plotly.graph_objs as go
-from dash import Dash, dash_table
-import flask
-from flask_login import LoginManager,UserMixin, current_user
 import os
+
+import dash
+import dash_bootstrap_components as dbc
+import flask
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objs as go
+# import dash_core_components as dcc
+from dash import Dash, callback_context, dash_table, dcc, html
+from dash.dependencies import Input, Output, State
+from flask_login import LoginManager, UserMixin, current_user
 from flask_sqlalchemy import SQLAlchemy
-import flask 
 
-# ------- LINK WITH FEATURES --------------------------------------------------------
-
-from src.app.feature_wallet.wallet import wallet
 from src.app.feature_history.wallet_history import wallet_history
 from src.app.feature_price.price import price
 from src.app.feature_transaction.transaction import transaction
+from src.app.feature_wallet.wallet import wallet
+
+# ------- LINK WITH FEATURES --------------------------------------------------------
+
 # from src.app.database.database import create_user
 # from src.app.database.database import portefolio_by_user
 # from src.app.database.database import add_wallet
@@ -59,7 +57,7 @@ encoded_image_reseaux = base64.b64encode(open(reseaux_filename, 'rb').read())
  #-------------- app Flask --------------#
 
 server = flask.Flask(__name__)
-server.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://xfddmevdjlcirr:a7aff7cf896ae3031db2d6100e26a601e39583bf6a3029ea190187db88fe2180@ec2-52-212-228-71.eu-west-1.compute.amazonaws.com:5432/d3c1n7bj0tkf52"
+server.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://tsgpzkhhlujycl:686ecd3e742892d2906c33e2958fa44e823fd882920f3f6b13f0e05b4574ebf8@ec2-63-32-248-14.eu-west-1.compute.amazonaws.com:5432/d2abmrgvn72hhi"
 server.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(server)
